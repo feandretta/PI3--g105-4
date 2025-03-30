@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "722921009975",
+    "project_id": "projeto-integrador-8e633",
+    "storage_bucket": "projeto-integrador-8e633.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722921009975:android:2dbfe0f525f4247ff6a0b2",
+        "android_client_info": {
+          "package_name": "projeto.integrador"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7eFP7TKVGsl2834F8L0fUgHe7xYBtINI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
