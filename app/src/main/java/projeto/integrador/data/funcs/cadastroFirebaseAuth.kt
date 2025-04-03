@@ -8,15 +8,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-// Função auxiliar para obter o IMEI (lembre-se de pedir a permissão READ_PHONE_STATE)
-fun getDeviceImei(context: Context): String? {
-    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        telephonyManager.imei
-    } else {
-        telephonyManager.deviceId
-    }
-}
+
 
 // Função suspend que cria o usuário, obtém o UID e salva os dados no Firestore
 suspend fun Cadastro(
@@ -39,14 +31,12 @@ suspend fun Cadastro(
         val uid = authResult.user?.uid ?: return false
 
         // Obtém o IMEI do dispositivo (pode ser nulo se não obtiver ou se não tiver permissão)
-        val imei = getDeviceImei(context)
 
         // Prepara os dados para salvar no Firestore; aqui, usamos o UID como identificador do documento
         val userMap = hashMapOf(
             "nome" to nome,
             "email" to email,
             "uid" to uid,
-            "imei" to imei
         )
 
         db.collection("usuarios")

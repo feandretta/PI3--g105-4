@@ -31,7 +31,7 @@ import projeto.integrador.data.funcs.Cadastro
 import projeto.integrador.data.model.Usuario
 
 @Composable
-fun SignUpScreen(navController: NavHostController, usuario: Usuario) {
+fun SignUpScreen(navController: NavHostController, usuario: Usuario, modifier: Modifier = Modifier.fillMaxSize()) {
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -60,9 +60,8 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario) {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("Olá, seja bem vindo!", fontSize = 24.sp)
         Text("Crie sua conta", fontSize = 24.sp)
