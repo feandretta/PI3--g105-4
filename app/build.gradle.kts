@@ -59,6 +59,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //DEPENDENCIAS DE CRIPTOGRAFIA
+    implementation (libs.androidx.security.crypto)
+
+
     //DEPENDENCIAS DO FIREBASE
 
     implementation(platform(libs.firebase.bom))

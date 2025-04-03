@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import projeto.integrador.presentation.theme.ui.ProjetoIntegrador1054Theme
 import projeto.integrador.routes.NavigationSetup
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

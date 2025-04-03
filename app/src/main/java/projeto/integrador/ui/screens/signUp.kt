@@ -48,7 +48,7 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text(text = "Confirmação") },
+            title = { Text(text = "Alerta") },
             text = { Text(text = dialogMessage) },
             confirmButton = {
                 Button(onClick = { showDialog = false }) {
