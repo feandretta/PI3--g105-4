@@ -7,6 +7,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
+import projeto.integrador.data.funcs.criptografar
 
 
 
@@ -37,6 +38,7 @@ suspend fun Cadastro(
             "nome" to nome,
             "email" to email,
             "uid" to uid,
+            "senha" to criptografar(senha)
         )
 
         db.collection("usuarios")
