@@ -38,6 +38,7 @@ fun validation(
                     "Erro inesperado: ${exception.localizedMessage}"
                 }
             }
+            //Retorna o erro para o usuário
             onResult(false, errorMessage)
         }
 }

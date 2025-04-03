@@ -38,6 +38,8 @@ suspend fun Cadastro(
             "nome" to nome,
             "email" to email,
             "uid" to uid,
+
+            // Campo Temporario
             "senha" to criptografar(senha)
         )
 

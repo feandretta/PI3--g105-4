@@ -106,6 +106,7 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario, modifier: M
             TextButton(onClick = { navController.navigate("signIn") }) {
                 Text("Já tenho uma conta", textDecoration = TextDecoration.Underline)
             }
+            //Vai passar os dados para a função de cadastro
             Button(onClick = {
                 scope.launch {
                     // Chama a função de cadastro passando context, nome, email, senha e confirmarSenha

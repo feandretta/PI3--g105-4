@@ -13,9 +13,11 @@ import projeto.integrador.ui.screens.singInScreen
 @Composable
 fun NavigationSetup(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "signUp") {
+        // Registro de usuários e tela inicial de usuários novos
         composable("signUp") {
             SignUpScreen(navController, Usuario("","","",""))
         }
+        // Tela de login de usuários existentes
         composable("singIn"){
             singInScreen(navController, Usuario("","","",""))
         }

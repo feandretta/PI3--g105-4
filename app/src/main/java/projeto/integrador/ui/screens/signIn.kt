@@ -14,12 +14,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import projeto.integrador.data.funcs.validation
 import projeto.integrador.data.model.Usuario
+import projeto.integrador.routes.NavigationSetup
 
 
 @Composable
-fun singInScreen(context:Context,modifier: Modifier, usuario: Usuario){
+fun singInScreen(context:Context,modifier: Modifier, usuario: Usuario, navHostController: NavHostController){
 
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -45,7 +47,10 @@ fun singInScreen(context:Context,modifier: Modifier, usuario: Usuario){
             Button(onClick = {
                 validation(context, email, senha) { success, message ->
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-
+                    if (success) {
+                        println("Sucesso")
+//                       navHostController.navigate("home")
+                    }
                 }
             }) {
                 Text("Entrar")
