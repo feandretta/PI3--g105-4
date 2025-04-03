@@ -1,6 +1,6 @@
 # SuperID - Gerenciador de Autenticações
 
-**Projeto Integrador 3 – Versão 1.0**
+**Projeto Integrador – Versão 1.0**
 
 ## Descrição
 O SuperID é um aplicativo Android desenvolvido em Kotlin, que permite a criação de contas, gerenciamento seguro de senhas e login sem senha via QR Code. Integrado com Firebase (Authentication, Firestore e Functions), o sistema possibilita a utilização do SuperID como método de autenticação por sites parceiros.
