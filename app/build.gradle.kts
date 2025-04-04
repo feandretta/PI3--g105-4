@@ -51,7 +51,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+<<<<<<< HEAD
     implementation(libs.androidx.navigation.runtime.ktx)
+=======
+    implementation(libs.androidx.navigation.runtime.android)
+>>>>>>> 064a1ae7e44c5ba0b6680efbec4e48b586aab2bf
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -59,6 +63,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //DEPENDENCIAS DE CRIPTOGRAFIA
+    implementation (libs.androidx.security.crypto)
+
 
     //DEPENDENCIAS DO FIREBASE
 
