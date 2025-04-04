@@ -14,18 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import projeto.integrador.presentation.theme.ui.ProjetoIntegrador1054Theme
 import projeto.integrador.routes.NavigationSetup
-<<<<<<< HEAD
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.widget.Toast
 import projeto.integrador.data.funcs.requestPhoneStatePermission
-
-=======
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
->>>>>>> 064a1ae7e44c5ba0b6680efbec4e48b586aab2bf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -7,21 +7,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.TelephonyManager
-<<<<<<< HEAD
 import android.provider.Settings
 import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-=======
 import android.util.Log
->>>>>>> 064a1ae7e44c5ba0b6680efbec4e48b586aab2bf
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import projeto.integrador.config.criptografar
-
-<<<<<<< HEAD
 private const val PERMISSION_REQUEST_CODE = 101
 
 // Função para verificar se a permissão foi concedida
@@ -42,8 +37,6 @@ fun requestPhoneStatePermission(activity: Activity) {
         )
     }
 }
-=======
->>>>>>> 064a1ae7e44c5ba0b6680efbec4e48b586aab2bf
 
 // Objeto utilitário para obter o identificador do dispositivo
 object DeviceUtils {
@@ -57,6 +50,7 @@ object DeviceUtils {
                 getAndroidID(context)
             } else {
                 if (checkPermission(context)) {
+                    DeviceUtils.getDeviceImei(context)
                     telephonyManager.imei ?: getAndroidID(context)
                 } else {
                     "PERMISSION_DENIED"
@@ -84,6 +78,7 @@ suspend fun Cadastro(
     confirmarSenha: String
 ): Boolean {
     if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) return false
+    if (senha.length < 6) return false
     if (senha != confirmarSenha) return false
 
     val auth = Firebase.auth
@@ -96,16 +91,14 @@ suspend fun Cadastro(
     return try {
         val authResult = auth.createUserWithEmailAndPassword(email, senha).await()
         val uid = authResult.user?.uid ?: return false
-
-<<<<<<< HEAD
         val imei = DeviceUtils.getDeviceImei(context)
-=======
->>>>>>> 064a1ae7e44c5ba0b6680efbec4e48b586aab2bf
+
 
         val userMap = hashMapOf(
             "nome" to nome,
             "email" to email,
             "uid" to uid,
+            "imei" to imei
         )
 
         db.collection("usuarios")
@@ -115,11 +108,11 @@ suspend fun Cadastro(
 
         true
     } catch (e: Exception) {
-<<<<<<< HEAD
+
         e.printStackTrace()
-=======
+
         Log.e("Cadastro", "Erro ao cadastrar usuário", e)
->>>>>>> 064a1ae7e44c5ba0b6680efbec4e48b586aab2bf
+
         false
     }
 }

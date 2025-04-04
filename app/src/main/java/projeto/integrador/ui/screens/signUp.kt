@@ -29,6 +29,18 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import projeto.integrador.data.funcs.Cadastro
 import projeto.integrador.data.model.Usuario
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+
+
+fun visualizacaoSenha(visualTransformation: Boolean): Boolean {
+
+    if (visualTransformation){
+        return false
+    }else{
+        return true
+    }
+}
 
 @Composable
 fun SignUpScreen(navController: NavHostController, usuario: Usuario, modifier: Modifier = Modifier.fillMaxSize()) {
@@ -38,6 +50,7 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario, modifier: M
     var confirmarSenha by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    var senhaVisivel by remember { mutableStateOf(false) }
 
     // Estado para controlar a exibição do diálogo de confirmação
     var showDialog by remember { mutableStateOf(false) }
@@ -86,15 +99,24 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario, modifier: M
             value = senha,
             onValueChange = { senha = it },
             label = { Text("Senha") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = if (senhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = confirmarSenha,
             onValueChange = { confirmarSenha = it },
             label = { Text("Confirmar Senha") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = if (senhaVisivel) VisualTransformation.None else PasswordVisualTransformation()
         )
+
+        TextButton(onClick = {
+            senhaVisivel = !senhaVisivel
+        }) {
+            Text(if (senhaVisivel) "Ocultar Senha" else "Mostrar Senha")
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier
