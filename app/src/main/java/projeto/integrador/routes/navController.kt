@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import projeto.integrador.data.model.Usuario
 import projeto.integrador.ui.screens.SignUpScreen
+import projeto.integrador.ui.screens.homeScreen
 import projeto.integrador.ui.screens.signInScreen
 
 //import projeto.integrador.ui.screens.SignInScreen
@@ -28,7 +29,9 @@ fun NavigationSetup(navController: NavHostController) {
                 usuario = Usuario("","","",""),
                 navHostController = navController
             )
-
+        }
+        composable("home"){
+            homeScreen(navController)
         }
     }
 }
