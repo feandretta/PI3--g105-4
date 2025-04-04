@@ -64,7 +64,7 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario, modifier: M
             title = { Text(text = "Alerta") },
             text = { Text(text = dialogMessage) },
             confirmButton = {
-                Button(onClick = { showDialog = false }) {
+                Button(onClick = { showDialog = false }, modifier = Modifier.padding(8.dp)) {
                     Text("OK")
                 }
             }
