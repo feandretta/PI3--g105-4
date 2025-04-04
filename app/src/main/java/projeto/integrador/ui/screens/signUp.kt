@@ -118,6 +118,7 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario) {
                     }
                     showDialog = true
                 }
+
             }) {
                 Text("Cadastrar")
             }

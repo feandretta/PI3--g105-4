@@ -14,10 +14,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import projeto.integrador.presentation.theme.ui.ProjetoIntegrador1054Theme
 import projeto.integrador.routes.NavigationSetup
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.widget.Toast
+import projeto.integrador.data.funcs.requestPhoneStatePermission
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestPhoneStatePermission(this)
         enableEdgeToEdge()
         setContent {
             ProjetoIntegrador1054Theme {

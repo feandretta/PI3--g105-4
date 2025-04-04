@@ -1,24 +1,73 @@
 package projeto.integrador.data.funcs
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.TelephonyManager
+import android.provider.Settings
+import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-// Função auxiliar para obter o IMEI (lembre-se de pedir a permissão READ_PHONE_STATE)
-fun getDeviceImei(context: Context): String? {
-    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        telephonyManager.imei
-    } else {
-        telephonyManager.deviceId
+private const val PERMISSION_REQUEST_CODE = 101
+
+// Função para verificar se a permissão foi concedida
+fun checkPermission(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.READ_PHONE_STATE
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+// Função para solicitar a permissão ao usuário (chame dentro de uma Activity)
+fun requestPhoneStatePermission(activity: Activity) {
+    if (!checkPermission(activity)) {
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.READ_PHONE_STATE),
+            PERMISSION_REQUEST_CODE
+        )
     }
 }
 
-// Função suspend que cria o usuário, obtém o UID e salva os dados no Firestore
+// Objeto utilitário para obter o identificador do dispositivo
+object DeviceUtils {
+
+    @SuppressLint("HardwareIds", "MissingPermission")
+    fun getDeviceImei(context: Context): String {
+        return try {
+            val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // A partir do Android 10, o IMEI não pode ser acessado diretamente
+                getAndroidID(context)
+            } else {
+                if (checkPermission(context)) {
+                    telephonyManager.imei ?: getAndroidID(context)
+                } else {
+                    "PERMISSION_DENIED"
+                }
+            }
+        } catch (e: SecurityException) {
+            "PERMISSION_DENIED"
+        } catch (e: Exception) {
+            "UNKNOWN"
+        }
+    }
+
+    fun getAndroidID(context: Context): String {
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+    }
+}
+
+// Função suspensa para criar usuário e salvar os dados no Firestore
+@RequiresPermission("android.permission.READ_PHONE_STATE")
 suspend fun Cadastro(
     context: Context,
     nome: String,
@@ -26,7 +75,6 @@ suspend fun Cadastro(
     senha: String,
     confirmarSenha: String
 ): Boolean {
-    // Valida os campos (você pode personalizar o tratamento de erro se desejar)
     if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || confirmarSenha.isEmpty()) return false
     if (senha != confirmarSenha) return false
 
@@ -34,14 +82,11 @@ suspend fun Cadastro(
     val db = Firebase.firestore
 
     return try {
-        // Cria o usuário no Firebase Authentication e aguarda o resultado
         val authResult = auth.createUserWithEmailAndPassword(email, senha).await()
         val uid = authResult.user?.uid ?: return false
 
-        // Obtém o IMEI do dispositivo (pode ser nulo se não obtiver ou se não tiver permissão)
-        val imei = getDeviceImei(context)
+        val imei = DeviceUtils.getDeviceImei(context)
 
-        // Prepara os dados para salvar no Firestore; aqui, usamos o UID como identificador do documento
         val userMap = hashMapOf(
             "nome" to nome,
             "email" to email,
@@ -56,7 +101,7 @@ suspend fun Cadastro(
 
         true
     } catch (e: Exception) {
-        // Aqui você pode logar o erro para depuração, se necessário
+        e.printStackTrace()
         false
     }
 }
