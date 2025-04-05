@@ -1,4 +1,4 @@
-package projeto.integrador.data.funcs
+package projeto.integrador.utilities.funcs
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -50,7 +50,7 @@ object DeviceUtils {
                 getAndroidID(context)
             } else {
                 if (checkPermission(context)) {
-                    DeviceUtils.getDeviceImei(context)
+                    getDeviceImei(context)
                     telephonyManager.imei ?: getAndroidID(context)
                 } else {
                     "PERMISSION_DENIED"
