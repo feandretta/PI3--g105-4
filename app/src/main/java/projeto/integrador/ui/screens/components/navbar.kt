@@ -3,19 +3,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 @Composable
-fun NavBar(navController: NavHostController) {
+fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {
     var menuExpanded by remember { mutableStateOf(false) }
     val auth = Firebase.auth
 
@@ -51,8 +53,7 @@ fun NavBar(navController: NavHostController) {
                         text = { Text("Perfil") },
                         onClick = {
                             menuExpanded = false
-                            // Navegue para a tela de perfil
-                            navController.navigate("perfil")
+                            navController.navigate("profile")
                         }
                     )
                     DropdownMenuItem(
@@ -74,7 +75,9 @@ fun NavBar(navController: NavHostController) {
             }
 
             // Título
-            Text("Projeto Integrador")
+            TextButton (onClick = {navController.navigate("home")}){
+                Text("Projeto Integrador", textDecoration = TextDecoration.Underline)
+            }
 
             // Ícone de adicionar
             TextButton(onClick = { navController.navigate("adicionarConta") }) {

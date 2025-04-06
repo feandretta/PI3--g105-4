@@ -19,7 +19,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHostController) {
+fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHostController){
     val db = Firebase.firestore
     val auth = Firebase.auth
 
