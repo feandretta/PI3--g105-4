@@ -13,7 +13,7 @@ import projeto.integrador.data.model.Usuario
 fun homeScreen(navController: NavHostController){
 
     val auth = Firebase.auth
-    val usuario = auth.currentUser?.email
+    val usuario = auth.currentUser?.emailgit 
 
     Column(){
         Text("Olá, seja bem vindo ${usuario}!", fontSize = 24.sp)
