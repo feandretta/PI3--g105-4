@@ -15,7 +15,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import projeto.integrador.data.funcs.validation
+import projeto.integrador.utilities.funcs.validation
 import projeto.integrador.data.model.Usuario
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import projeto.integrador.routes.NavigationSetup

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import projeto.integrador.data.funcs.Cadastro
+import projeto.integrador.utilities.funcs.Cadastro
 import projeto.integrador.data.model.Usuario
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -64,7 +64,7 @@ fun SignUpScreen(navController: NavHostController, usuario: Usuario, modifier: M
             title = { Text(text = "Alerta") },
             text = { Text(text = dialogMessage) },
             confirmButton = {
-                Button(onClick = { showDialog = false }) {
+                Button(onClick = { showDialog = false }, modifier = Modifier.padding(8.dp)) {
                     Text("OK")
                 }
             }

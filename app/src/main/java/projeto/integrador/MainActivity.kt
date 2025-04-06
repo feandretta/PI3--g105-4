@@ -19,7 +19,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.widget.Toast
-import projeto.integrador.data.funcs.requestPhoneStatePermission
+import projeto.integrador.utilities.funcs.requestPhoneStatePermission
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 

@@ -1,4 +1,4 @@
-package projeto.integrador.data.funcs
+package projeto.integrador.utilities.funcs
 
 import android.content.Context
 import android.util.Log
