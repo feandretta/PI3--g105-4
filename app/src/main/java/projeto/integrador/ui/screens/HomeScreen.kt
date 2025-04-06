@@ -22,10 +22,7 @@ import kotlinx.coroutines.tasks.await
 fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHostController){
     val db = Firebase.firestore
     val auth = Firebase.auth
-<<<<<<< HEAD
-    val usuario = auth.currentUser?.emailgit 
-=======
->>>>>>> 7dbfc38960fcf5e8e8bc31d8c9f0df00f33df241
+
 
     val uid = auth.currentUser?.uid ?: "uid"
 
