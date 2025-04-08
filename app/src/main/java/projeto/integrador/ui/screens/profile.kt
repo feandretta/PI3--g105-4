@@ -133,7 +133,5 @@ fun ProfileScreen(navController: NavHostController) {
                 )
             }
         }
-        // Exibe a NavBar
-
     }
 }
