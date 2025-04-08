@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    return (
+        <div className="min-h-screen bg-zinc-900 flex items-center justify-center p-4">
+            <div className="bg-zinc-800 text-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+                <h2 className="text-3xl font-bold mb-6 text-center">Entrar no SuperID</h2>
 
+                <form className="space-y-4">
+                    <div>
+                        <label htmlFor="email" className="block mb-1 text-sm font-medium">
+                            E-mail
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            className="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="seu@email.com"
+                        />
+                    </div>
+
+                    <div>
+                        <label htmlFor="senha" className="block mb-1 text-sm font-medium">
+                            Senha
+                        </label>
+                        <input
+                            type="password"
+                            id="senha"
+                            className="w-full px-4 py-2 rounded-lg bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="••••••••"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 hover:bg-blue-700 transition-colors px-4 py-2 rounded-lg text-white font-semibold"
+                    >
+                        Entrar
+                    </button>
+                </form>
+
+                <p className="text-sm text-zinc-400 mt-4 text-center">
+                    Esqueceu a senha? <a href="#" className="text-blue-400 hover:underline">Recuperar</a>
+                </p>
+            </div>
+        </div>
+    );
+}
 export default App;
