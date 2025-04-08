@@ -1,7 +1,4 @@
-async function gerarQRCode() {
-    console.log("QR Code gerado!");
-    // Aqui você pode colocar a lógica real futuramente, como fazer uma requisição à Firebase Function
-}
+import { Link } from "react-router-dom";
 
 function Login() {
     return (
@@ -41,24 +38,25 @@ function Login() {
                         Entrar
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={gerarQRCode}
-                        className="w-full mt-2 bg-green-600 hover:bg-green-700 transition-colors px-4 py-2 rounded-lg text-white font-semibold"
+                    <Link
+                        to="/login-qr"
+                        className="block text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors"
                     >
-                        Login via QR Code
-                    </button>
+                        Login por QR Code
+                    </Link>
                 </form>
 
-               <div className="flex justify-between items-center">
-                   <p className="text-sm text-zinc-400 mt-4 text-center">
-                       Esqueceu a senha?{" "}
-                       <a href="#" className="text-blue-400 hover:underline">
-                           Recuperar
-                       </a>
-                   </p>
-                   <a href="register" className="text-sm text-blue-400 hover:underline trans mt-4 text-end">Registrar-se</a>
-               </div>
+                <div className="flex justify-between items-center mt-6 text-sm text-zinc-400">
+          <span>
+            Esqueceu a senha?{" "}
+              <a href="#" className="text-blue-400 hover:underline">
+              Recuperar
+            </a>
+          </span>
+                    <Link to="/register" className="text-blue-400 hover:underline">
+                        Registrar-se
+                    </Link>
+                </div>
             </div>
         </div>
     );
