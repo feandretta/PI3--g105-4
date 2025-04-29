@@ -29,32 +29,32 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.google.firebase.auth.EmailAuthProvider
+
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
     val auth = Firebase.auth
     val db = Firebase.firestore
-
     val user = auth.currentUser
-    val uid = user?.uid ?: "uid"
+    val uid = user?.uid ?: return
+
     var nomeUsuario by remember { mutableStateOf("") }
     var emailUsuario by remember { mutableStateOf("") }
+    var senhaAtual by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(true) }
     var updateStatus by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
-    // Busca as informações do usuário ao iniciar a tela
+    // Buscar dados do Firestore
     LaunchedEffect(Unit) {
         try {
-            val document = db.collection("usuarios")
-                .document(uid)
-                .get()
-                .await()
+            val document = db.collection("usuarios").document(uid).get().await()
             nomeUsuario = document.getString("nome") ?: ""
-            // Se o email não estiver salvo no Firestore, pega do Firebase Auth
-            emailUsuario = document.getString("email") ?: (user?.email ?: "")
+            emailUsuario = document.getString("email") ?: user?.email.orEmpty()
         } catch (e: Exception) {
-            Log.e("ProfileScreen", "Erro ao obter os dados do usuário", e)
+            Log.e("ProfileScreen", "Erro ao obter dados", e)
         } finally {
             isLoading = false
         }
@@ -73,50 +73,62 @@ fun ProfileScreen(navController: NavHostController) {
         } else {
             NavBar(navController)
 
-            // Campo para editar o nome
             TextField(
                 value = nomeUsuario,
                 onValueChange = { nomeUsuario = it },
                 label = { Text("Nome") }
             )
-            // Campo para editar o email
+
             TextField(
                 value = emailUsuario,
                 onValueChange = { emailUsuario = it },
                 label = { Text("Email") }
             )
-            // Botão para salvar as alterações
+
+            TextField(
+                value = senhaAtual,
+                onValueChange = { senhaAtual = it },
+                label = { Text("Senha Atual") },
+                visualTransformation = PasswordVisualTransformation()
+            )
+
             Button(
                 onClick = {
+                    if (senhaAtual.isBlank()) {
+                        updateStatus = "Digite sua senha atual para atualizar o email."
+                        return@Button
+                    }
+
                     scope.launch {
                         try {
-                            // Atualiza os dados no Firestore
-                            db.collection("usuarios")
-                                .document(uid)
-                                .update(
-                                    mapOf(
-                                        "nome" to nomeUsuario,
-                                        "email" to emailUsuario
-                                    )
+                            updateStatus = "Reautenticando..."
+                            val credential = EmailAuthProvider.getCredential(user?.email ?: "", senhaAtual)
+                            user?.reauthenticate(credential)?.await()
+
+                            updateStatus = "Atualizando email..."
+                            user?.updateEmail(emailUsuario)?.await()
+
+                            updateStatus = "Atualizando nome..."
+                            val profileUpdates = UserProfileChangeRequest.Builder()
+                                .setDisplayName(nomeUsuario)
+                                .build()
+                            user?.updateProfile(profileUpdates)?.await()
+
+                            // Forçar recarregamento dos dados do Firebase Auth
+                            auth.currentUser?.reload()
+
+                            updateStatus = "Salvando no Firestore..."
+                            db.collection("usuarios").document(uid).update(
+                                mapOf(
+                                    "nome" to nomeUsuario,
+                                    "email" to emailUsuario
                                 )
-                                .await()
-
-                            // Atualiza os dados no Firebase Auth
-                            user?.let {
-                                // Atualiza o email do usuário
-                                it.verifyBeforeUpdateEmail(emailUsuario).await()
-
-                                // Atualiza o nome (displayName) do usuário
-                                val profileUpdates = UserProfileChangeRequest.Builder()
-                                    .setDisplayName(nomeUsuario)
-                                    .build()
-                                it.updateProfile(profileUpdates).await()
-                            }
+                            ).await()
 
                             updateStatus = "Dados atualizados com sucesso!"
                         } catch (e: Exception) {
-                            Log.e("ProfileScreen", "Erro ao atualizar os dados do usuário", e)
-                            updateStatus = "Falha ao atualizar os dados."
+                            Log.e("ProfileScreen", "Erro ao atualizar", e)
+                            updateStatus = "Erro: ${e.message}"
                         }
                     }
                 },
@@ -124,7 +136,7 @@ fun ProfileScreen(navController: NavHostController) {
             ) {
                 Text("Salvar")
             }
-            // Exibe uma mensagem de confirmação ou erro
+
             if (updateStatus.isNotEmpty()) {
                 Text(
                     text = updateStatus,
