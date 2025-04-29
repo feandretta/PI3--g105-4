@@ -11,6 +11,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import projeto.integrador.data.model.Usuario
+import projeto.integrador.ui.screens.AccountAddScreen
 import projeto.integrador.ui.screens.ProfileScreen
 import projeto.integrador.ui.screens.SignUpScreen
 import projeto.integrador.ui.screens.signInScreen
@@ -44,6 +45,9 @@ fun NavigationSetup(navController: NavHostController) {
         }
         composable("profile"){
             ProfileScreen(navController)
+        }
+        composable("adicionarConta"){
+            AccountAddScreen(modifier = Modifier, navController)
         }
     }
 }
