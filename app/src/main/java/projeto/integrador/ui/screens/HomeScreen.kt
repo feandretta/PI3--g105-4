@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -102,51 +103,62 @@ fun HomeScreen(
                     )
                 }
                 nomeUsuario != null -> {
-                    Box(modifier = Modifier.background(Color.Transparent)){
-                        // Corpo
-
-                        Column (modifier = modifier
-                            .padding(vertical = 8.dp, horizontal = 16.dp)
-                            .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ){
-                            Card (modifier = modifier
-                                .padding(vertical = 16.dp, horizontal = 16.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color.LightGray,
-                                    contentColor = Color.Black
-                                ),
-                                onClick = {
-                                    navController.navigate("adicionarConta")
-                                }
-
-                            )
-                            {
-                                Row (modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)){
-                                    Image(
-                                        imageVector = Icons.Default.AccountCircle,
-                                        contentDescription = "Verificar Contas",
-                                    )
-                                    Spacer(modifier = Modifier.padding(8.dp))
-                                    Text("Contas")
-                                }
+                    Column (modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Card ( modifier = Modifier.fillMaxWidth()
+                                .padding(8.dp)){
+                                Box(modifier = Modifier.padding(16.dp)
+                                    .fillMaxWidth(),
+                                    contentAlignment = Alignment.Center,
+                                ){
+                                    Row (
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Image(
+                                            imageVector = Icons.Default.AccountCircle,
+                                            contentDescription = "Adicionar Conta",
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Text("Adicionar Conta")
+                                    }
                             }
-                            Card (modifier = modifier
-                                .padding(vertical = 16.dp, horizontal = 16.dp),
-                                colors = CardDefaults.cardColors(Color.Red),
-                                onClick = {/*TODO*/}
-                            )
-                            {
-                                Row {
+                        }
+                        Card ( modifier = Modifier.fillMaxWidth()
+                            .padding(8.dp)){
+                            Box(modifier = Modifier.padding(16.dp)
+                                .fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ){
+                                Row (
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
                                     Image(
                                         imageVector = Icons.Default.Edit,
-                                        contentDescription = "Editar Contas",
+                                        contentDescription = "Editar Conta",
                                     )
-                                    Spacer(modifier = Modifier.padding(8.dp))
-                                    Text("Editar Contas")
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text("Editar Conta")
                                 }
                             }
-
+                        }
+                        Card ( modifier = Modifier.fillMaxWidth()
+                            .padding(8.dp)){
+                            Box(modifier = Modifier.padding(16.dp)
+                                .fillMaxWidth(),
+                                contentAlignment = Alignment.Center,
+                            ){
+                                Row (
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Image(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Deletar Conta",
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text("Deletar Conta")
+                                }
+                            }
                         }
                     }
                 }
