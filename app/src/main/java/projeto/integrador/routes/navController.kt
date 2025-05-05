@@ -1,6 +1,8 @@
 package projeto.integrador.routes
 
 import HomeScreen
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,6 +19,7 @@ import projeto.integrador.ui.screens.signInScreen
 
 //import projeto.integrador.ui.screens.SignInScreen
 
+@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun NavigationSetup(navController: NavHostController) {
 

@@ -60,7 +60,7 @@ fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {
                         text = { Text("Configuração") },
                         onClick = {
                             menuExpanded = false
-                            navController.navigate("configuracao")
+                            navController.navigate({/*CONFG*/})
                         }
                     )
                     DropdownMenuItem(

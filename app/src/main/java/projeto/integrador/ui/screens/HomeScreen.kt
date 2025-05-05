@@ -1,94 +1,162 @@
+import android.app.Activity
+import android.os.Build
 import android.util.Log
+import android.view.WindowInsets
+import android.widget.Space
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
+import androidx.compose.material3.CardDefaults
 
+
+/** Composable helper para esconder status/navigation bars **/
+@RequiresApi(Build.VERSION_CODES.R)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHostController){
-    val db = Firebase.firestore
+private fun HideSystemBars() {
+    val view = LocalView.current
+    // não executa no preview
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            // faz o conteúdo ocupar toda a área
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            // esconde status e nav bars
+            window.insetsController
+                ?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier.fillMaxSize(),
+    navController: NavHostController
+) {
+    // já esconde as system bars
+    HideSystemBars()
+
+    val db   = Firebase.firestore
     val auth = Firebase.auth
+    val uid  = auth.currentUser?.uid ?: return
 
+    var nomeUsuario by remember { mutableStateOf<String?>(null) }
+    var isLoading   by remember { mutableStateOf(true) }
 
-    val uid = auth.currentUser?.uid ?: "uid"
-
-    var nomeUsuario by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(true) }
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(uid) {
         try {
-            val document = db.collection("usuarios")
-                .document(uid)
-                .get()
-                .await()
-            nomeUsuario = document.getString("nome") ?: ""
+            val doc = db.collection("usuarios").document(uid).get().await()
+            nomeUsuario = doc.getString("nome")
         } catch (e: Exception) {
-            Log.e("HomeScreen", "Erro ao obter o nome do usuário", e)
+            Log.e("HomeScreen", "Erro ao obter nome do usuário", e)
         } finally {
             isLoading = false
         }
     }
 
-    Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
-    ) {
-        Column(
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            NavBar(
+                navController = navController,
+                modifier      = Modifier.fillMaxWidth()
+            )
+        }
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(innerPadding)                // desloca abaixo da NavBar
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
         ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(64.dp),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            } else {
-                Row (modifier = modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.SpaceBetween){
-                    NavBar(navController)
+            when {
+                isLoading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color    = MaterialTheme.colorScheme.primary
+                    )
                 }
-                Card(
-                    modifier = Modifier.padding(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Bem vindo!",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Olá, seja bem vindo $nomeUsuario!",
-                            fontSize = 20.sp,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                nomeUsuario != null -> {
+                    Box(modifier = Modifier.background(Color.Transparent)){
+                        // Corpo
+
+                        Column (modifier = modifier
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                            .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ){
+                            Card (modifier = modifier
+                                .padding(vertical = 16.dp, horizontal = 16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.LightGray,
+                                    contentColor = Color.Black
+                                ),
+                                onClick = {
+                                    navController.navigate("adicionarConta")
+                                }
+
+                            )
+                            {
+                                Row (modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)){
+                                    Image(
+                                        imageVector = Icons.Default.AccountCircle,
+                                        contentDescription = "Verificar Contas",
+                                    )
+                                    Spacer(modifier = Modifier.padding(8.dp))
+                                    Text("Contas")
+                                }
+                            }
+                            Card (modifier = modifier
+                                .padding(vertical = 16.dp, horizontal = 16.dp),
+                                colors = CardDefaults.cardColors(Color.Red),
+                                onClick = {/*TODO*/}
+                            )
+                            {
+                                Row {
+                                    Image(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Editar Contas",
+                                    )
+                                    Spacer(modifier = Modifier.padding(8.dp))
+                                    Text("Editar Contas")
+                                }
+                            }
+
+                        }
                     }
+                }
+                else -> {
+                    Text(
+                        text      = "Não foi possível carregar seu nome.Tente novamente",
+                        modifier  = Modifier.align(Alignment.Center),
+                        color     = Color.Red,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }

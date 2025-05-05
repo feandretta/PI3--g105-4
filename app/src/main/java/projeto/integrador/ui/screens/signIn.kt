@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.navigation.NavHostController
 import projeto.integrador.utilities.funcs.validation
 import projeto.integrador.data.model.Usuario
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import projeto.integrador.routes.NavigationSetup
 
@@ -66,6 +68,10 @@ fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navHostCo
             }) {
                 Text("Entrar")
             }
+
+           TextButton(onClick = {navHostController.navigate("signUp")}){
+               Text("Cadastrar", textDecoration = TextDecoration.Underline)
+           }
         }
     }
 }
