@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -60,77 +62,87 @@ fun ProfileScreen(navController: NavHostController) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(16.dp)
-            .safeContentPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator()
-        } else {
-            NavBar(navController)
-
-            // Campo para editar o nome
-            TextField(
-                value = nomeUsuario,
-                onValueChange = { nomeUsuario = it },
-                label = { Text("Nome") }
+    Scaffold(
+        topBar = {
+            NavBar(
+                navController = navController,
+                modifier = Modifier.fillMaxWidth()
             )
-            // Campo para editar o email
-            TextField(
-                value = emailUsuario,
-                onValueChange = { emailUsuario = it },
-                label = { Text("Email") }
-            )
-            // Botão para salvar as alterações
-            Button(
-                onClick = {
-                    scope.launch {
-                        try {
-                            // Atualiza os dados no Firestore
-                            db.collection("usuarios")
-                                .document(uid)
-                                .update(
-                                    mapOf(
-                                        "nome" to nomeUsuario,
-                                        "email" to emailUsuario
-                                    )
-                                )
-                                .await()
+        }
+    ){
+        innerPadding ->
 
-                            // Atualiza os dados no Firebase Auth
-                            user?.let {
-                                // Atualiza o email do usuário
-                                it.verifyBeforeUpdateEmail(emailUsuario).await()
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(innerPadding)
+                .safeContentPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator()
+            } else {
 
-                                // Atualiza o nome (displayName) do usuário
-                                val profileUpdates = UserProfileChangeRequest.Builder()
-                                    .setDisplayName(nomeUsuario)
-                                    .build()
-                                it.updateProfile(profileUpdates).await()
-                            }
-
-                            updateStatus = "Dados atualizados com sucesso!"
-                        } catch (e: Exception) {
-                            Log.e("ProfileScreen", "Erro ao atualizar os dados do usuário", e)
-                            updateStatus = "Falha ao atualizar os dados."
-                        }
-                    }
-                },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text("Salvar")
-            }
-            // Exibe uma mensagem de confirmação ou erro
-            if (updateStatus.isNotEmpty()) {
-                Text(
-                    text = updateStatus,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                // Campo para editar o nome
+                TextField(
+                    value = nomeUsuario,
+                    onValueChange = { nomeUsuario = it },
+                    label = { Text("Nome") }
                 )
+                // Campo para editar o email
+                TextField(
+                    value = emailUsuario,
+                    onValueChange = { emailUsuario = it },
+                    label = { Text("Email") }
+                )
+                // Botão para salvar as alterações
+                Button(
+                    onClick = {
+                        scope.launch {
+                            try {
+                                // Atualiza os dados no Firestore
+                                db.collection("usuarios")
+                                    .document(uid)
+                                    .update(
+                                        mapOf(
+                                            "nome" to nomeUsuario,
+                                            "email" to emailUsuario
+                                        )
+                                    )
+                                    .await()
+
+                                // Atualiza os dados no Firebase Auth
+                                user?.let {
+                                    // Atualiza o email do usuário
+                                    it.verifyBeforeUpdateEmail(emailUsuario).await()
+
+                                    // Atualiza o nome (displayName) do usuário
+                                    val profileUpdates = UserProfileChangeRequest.Builder()
+                                        .setDisplayName(nomeUsuario)
+                                        .build()
+                                    it.updateProfile(profileUpdates).await()
+                                }
+
+                                updateStatus = "Dados atualizados com sucesso!"
+                            } catch (e: Exception) {
+                                Log.e("ProfileScreen", "Erro ao atualizar os dados do usuário", e)
+                                updateStatus = "Falha ao atualizar os dados."
+                            }
+                        }
+                    },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text("Salvar")
+                }
+                // Exibe uma mensagem de confirmação ou erro
+                if (updateStatus.isNotEmpty()) {
+                    Text(
+                        text = updateStatus,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
         }
     }
