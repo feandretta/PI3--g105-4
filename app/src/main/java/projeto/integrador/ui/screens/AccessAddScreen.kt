@@ -31,7 +31,12 @@ fun AccessAddScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: 
 
     val uid = auth.currentUser?.uid ?: "uid"
 
-    var newAccess : Access = Access("","","","")
+    var categoria by remember { mutableStateOf("")}
+    var senha by remember { mutableStateOf("")}
+    var dominio by remember { mutableStateOf("")}
+    var email by remember { mutableStateOf("")}
+    var descricao by remember { mutableStateOf("")}
+    var isVisible = true
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize(),
@@ -44,17 +49,28 @@ fun AccessAddScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: 
         Column {
             Text("Categoria")
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false}) {
-                DropdownMenuItem(text = { Text("SiteWeb")}, onClick = { newAccess.categoria = "SiteWeb"})
-                DropdownMenuItem(text = { Text("Aplicativo")}, onClick = { newAccess.categoria = "Aplicativo"})
-                DropdownMenuItem(text = { Text("Teclado Físico")}, onClick = { newAccess.categoria = "Teclado Físico"})
+                DropdownMenuItem(text = { Text("SiteWeb")}, onClick = { categoria = "SiteWeb"; isVisible = true})
+                DropdownMenuItem(text = { Text("Aplicativo")}, onClick = { categoria = "Aplicativo"})
+                DropdownMenuItem(text = { Text("Teclado Físico")}, onClick = { categoria = "Teclado Físico"})
 
             }
+            Spacer(modifier = Modifier.height(8.dp))
             TextField(
-                value = newAccess.senha.toString(),
-                onValueChange = { newAccess.senha = it },
+                value = senha,
+                onValueChange = { senha = it },
                 label = { Text("Senha") },
                 modifier = Modifier.padding(top = 16.dp)
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            if(isVisible){
+                TextField(
+                    value = dominio,
+                    onValueChange = { dominio = it },
+                    label = { Text("Dominio") },
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+            }
+
         }
     }
 
