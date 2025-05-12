@@ -147,7 +147,7 @@ fun HomeScreen(
                         HomeOptionCard(
                             icon = Icons.Default.AccountCircle,
                             title = "Adicionar Conta",
-                            description = "Criar uma nova conta bancária",
+                            description = "Criar uma nova conta",
                             onClick = { /* TODO: Navigate to add account */ }
                         )
 
@@ -186,7 +186,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeOptionCard(
+private fun  HomeOptionCard(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
     description: String,
