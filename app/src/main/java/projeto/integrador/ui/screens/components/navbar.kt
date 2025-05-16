@@ -32,7 +32,7 @@ fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth().safeContentPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

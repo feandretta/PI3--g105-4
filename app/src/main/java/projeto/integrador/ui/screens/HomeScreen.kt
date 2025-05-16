@@ -47,7 +47,7 @@ private fun HideSystemBars() {
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier.fillMaxSize().systemBarsPadding(),
     navController: NavHostController
 ) {
     // já esconde as system bars
@@ -176,7 +176,7 @@ fun HomeScreen(
                             icon = Icons.Default.Settings,
                             title = "Configurações",
                             description = "Ajustar preferências do aplicativo",
-                            onClick = { navController.navigate("config")}
+                            onClick = { navController.navigate("settings")}
                         )
                     }
                 }

@@ -16,6 +16,7 @@ import projeto.integrador.data.model.Usuario
 import projeto.integrador.ui.screens.ProfileScreen
 import projeto.integrador.ui.screens.SignUpScreen
 import projeto.integrador.ui.screens.signInScreen
+import projeto.integrador.ui.screens.ConfigScreen
 
 //import projeto.integrador.ui.screens.SignInScreen
 
@@ -47,6 +48,10 @@ fun NavigationSetup(navController: NavHostController) {
         }
         composable("profile"){
             ProfileScreen(navController)
+        }
+
+        composable("settings"){
+            ConfigScreen(modifier = Modifier,navController)
         }
     }
 }
