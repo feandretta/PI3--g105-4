@@ -29,6 +29,10 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import NavBar
 import android.widget.Toast
+import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.gms.auth.api.Auth
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
@@ -57,6 +61,7 @@ fun ConfigScreen(
     var notificationsEnabled by remember { mutableStateOf(true) }
     var biometricEnabled by remember { mutableStateOf(false) }
     var language by remember { mutableStateOf("Português") }
+    val auth = Firebase.auth
 
     Scaffold(
         modifier = modifier,
@@ -94,16 +99,6 @@ fun ConfigScreen(
                     checked = darkMode,
                     onCheckedChange = { darkMode = it }
                 )
-
-                // Idioma
-                ConfigDropdown(
-                    icon = Icons.Filled.Language,
-                    title = "Idioma",
-                    description = "Selecione o idioma do aplicativo",
-                    currentValue = language,
-                    options = listOf("Português", "English", "Español"),
-                    onOptionSelected = { language = it }
-                )
             }
 
             // Seção de Segurança
@@ -113,7 +108,11 @@ fun ConfigScreen(
                     icon = Icons.Filled.Lock,
                     title = "Alterar Senha",
                     description = "Modificar sua senha de acesso",
-                    onClick = { navController.navigate("alterarSenha") }
+                    onClick = {
+                        auth.sendPasswordResetEmail(auth.currentUser?.email.toString())
+                        Toast.makeText(context, "Um email de recuperação de senha foi enviado", Toast.LENGTH_SHORT).show()
+                    }
+
                 )
             }
 
@@ -389,4 +388,11 @@ private fun ConfigDropdown(
             )
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.R)
+@Preview
+@Composable
+fun ConfigScreenPreview() {
+    ConfigScreen(navController = NavHostController(LocalContext.current))
 }
