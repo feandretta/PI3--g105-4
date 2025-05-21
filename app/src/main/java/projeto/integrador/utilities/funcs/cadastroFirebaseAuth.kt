@@ -68,7 +68,53 @@ object DeviceUtils {
     }
 }
 
-// Função suspensa para criar usuário e salvar os dados no Firestore
+/**
+ * Cria categorias pré-definidas para um novo usuário
+ * @param userId ID do usuário para o qual as categorias serão criadas
+ */
+private suspend fun createDefaultCategories(userId: String) {
+    val db = Firebase.firestore
+    val categories = listOf(
+        hashMapOf(
+            "name" to "Alimentação",
+            "color" to "#4CAF50", // Verde
+            "createdAt" to com.google.firebase.Timestamp.now()
+        ),
+        hashMapOf(
+            "name" to "Transporte",
+            "color" to "#2196F3", // Azul
+            "createdAt" to com.google.firebase.Timestamp.now()
+        ),
+        hashMapOf(
+            "name" to "Lazer",
+            "color" to "#9C27B0", // Roxo
+            "createdAt" to com.google.firebase.Timestamp.now()
+        )
+    )
+
+    // Adiciona cada categoria ao Firestore
+    categories.forEach { category ->
+        try {
+            db.collection("usuarios")
+                .document(userId)
+                .collection("categories")
+                .add(category)
+                .await()
+        } catch (e: Exception) {
+            Log.e("Cadastro", "Erro ao criar categoria padrão: ${e.message}")
+        }
+    }
+}
+
+/**
+ * Função suspensa para criar usuário e salvar os dados no Firestore
+ * @param context Contexto da aplicação
+ * @param nome Nome do usuário
+ * @param email Email do usuário
+ * @param senha Senha do usuário
+ * @param confirmarSenha Confirmação da senha
+ * @return Boolean indicando se o cadastro foi bem-sucedido
+ */
 @RequiresPermission("android.permission.READ_PHONE_STATE")
 suspend fun Cadastro(
     context: Context,
@@ -101,10 +147,14 @@ suspend fun Cadastro(
             "imei" to imei
         )
 
+        // Salva os dados do usuário no Firestore
         db.collection("usuarios")
             .document(uid)
             .set(userMap)
             .await()
+
+        // Cria as categorias pré-definidas para o novo usuário
+        createDefaultCategories(uid)
 
         true
     } catch (e: Exception) {
