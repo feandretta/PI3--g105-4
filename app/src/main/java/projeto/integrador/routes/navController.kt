@@ -59,7 +59,7 @@ fun NavigationSetup(navController: NavHostController) {
                 context = context,
                 modifier = Modifier,
                 usuario = Usuario("","","",""),
-                navController = navController
+                navHostController = navController
             )
         }
         composable("home"){
