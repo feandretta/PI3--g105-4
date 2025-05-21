@@ -1,34 +1,21 @@
 // ... (imports existentes)
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import projeto.integrador.R
-import projeto.integrador.data.model.Category
-import projeto.integrador.ui.screens.components.CriarCategoriaDialog
+import projeto.integrador.utilities.funcs.CriarCategoriaDialog
 
 @Composable
 fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -124,13 +111,13 @@ fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {
                             addMenuExpanded = false
                         }
                     )
-                    DropdownMenuItem(
-                        text = { Text("Filtrar por categoria")},
-                        onClick = {
-                            navController.navigate("filtrar")
-                            addMenuExpanded = false
-                        }
-                    )
+//                    DropdownMenuItem(
+//                        text = { Text("Filtrar por categoria")},
+//                        onClick = {
+//                            navController.navigate("filtrar")
+//                            addMenuExpanded = false
+//                        }
+//                    )
                 }
             }
         }
