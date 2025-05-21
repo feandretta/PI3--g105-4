@@ -76,20 +76,25 @@ private suspend fun createDefaultCategories(userId: String) {
     val db = Firebase.firestore
     val categories = listOf(
         hashMapOf(
-            "name" to "Alimentação",
-            "color" to "#4CAF50", // Verde
+            "name" to "Sites Web",
+            "color" to "#2196F3", // Verde
             "createdAt" to com.google.firebase.Timestamp.now()
         ),
         hashMapOf(
-            "name" to "Transporte",
-            "color" to "#2196F3", // Azul
+            "name" to "Apps",
+            "color" to "#4CAF50", // Azul
+            "createdAt" to com.google.firebase.Timestamp.now()
+        ),
+        hashMapOf(
+            "name" to "Alimentação",
+            "color" to "#9C27B0", // Roxo
             "createdAt" to com.google.firebase.Timestamp.now()
         ),
         hashMapOf(
             "name" to "Lazer",
             "color" to "#9C27B0", // Roxo
             "createdAt" to com.google.firebase.Timestamp.now()
-        )
+    )
     )
 
     // Adiciona cada categoria ao Firestore
