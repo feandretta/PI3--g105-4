@@ -1,24 +1,30 @@
 package projeto.integrador.utilities.funcs
 
 import android.nfc.Tag
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
+import projeto.integrador.config.generateAccessToken
 import projeto.integrador.data.model.Access
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 //função para cadastrar as senhas
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 suspend fun accessRegister(access: Access): Boolean{
     //ele não irá retornar caso a SENHA, CATEGORIA ou NOME sejam vazios os demais campos são opcionais
     if(access.AccessIsEmpty()){
         val auth = Firebase.auth
         val db = Firebase.firestore
         val uid = auth.currentUser?.uid ?: "uid"
+
+        access.accessToken = generateAccessToken()
 
         return try{
             db.collection("usuarios")
@@ -63,6 +69,27 @@ suspend fun getAccessByUser(): List<DocumentSnapshot> {
                 continuation.resumeWithException(exception)
             }
     }
+}
+
+suspend fun getAccessByUser(accessId : DocumentSnapshot){
+    val auth = Firebase.auth
+    val db = Firebase.firestore
+    val uid = auth.currentUser?.uid ?: "uid"
+
+    val Id = accessId.toString()
+
+    val docRef = db.collection("usuarios").document("uid").collection("accessos").document(Id)
+    docRef.get()
+        .addOnSuccessListener { document ->
+            if (document != null) {
+                Log.d("Get Access", "DocumentSnapshot data: ${document.data}")
+            } else {
+                Log.d("Get Access", "No such document")
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.d("Get Access", "get failed with ", exception)
+        }
 }
 //passa o id e o acesso novo que ele edita
 suspend fun alterAccess(idAccess: String , accessAtualizado: Access): Boolean{
