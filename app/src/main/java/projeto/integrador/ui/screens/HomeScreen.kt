@@ -30,7 +30,7 @@ import kotlinx.coroutines.tasks.await
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier.fillMaxSize().systemBarsPadding(),
+    modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
 

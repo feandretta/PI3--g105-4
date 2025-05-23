@@ -1,4 +1,4 @@
-package projeto.integrador.ui.screens
+package projeto.integrador.ui.screens.signIn
 
 import android.content.Context
 import android.widget.Toast
@@ -26,13 +26,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,25 +36,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import projeto.integrador.utilities.funcs.validation
-import projeto.integrador.data.model.Usuario
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import projeto.integrador.R
-import projeto.integrador.routes.NavigationSetup
 
 
 @Composable
-fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navController: NavHostController){
-
-    var email by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
-
-    var manterConectado by remember { mutableStateOf(false) }
-    var senhaVisivel by remember { mutableStateOf(false) }
-
+fun SignInScreen(
+    context: Context,
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    viewModel: SignInViewModel = viewModel()
+) {
+    val email by viewModel.email.collectAsState()
+    val senha by viewModel.senha.collectAsState()
+    val manterConectado by viewModel.manterConectado.collectAsState()
+    val senhaVisivel by viewModel.senhaVisivel.collectAsState()
 
     Box(
         modifier = Modifier
@@ -75,8 +70,7 @@ fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navContro
             Image(
                 painter = painterResource(R.drawable.placeholder),
                 contentDescription = "Logo",
-                modifier = Modifier
-                    .size(150.dp)
+                modifier = Modifier.size(150.dp)
             )
             Text(
                 text = "Super ID",
@@ -88,7 +82,7 @@ fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navContro
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { viewModel.onEmailChange(it) },
                 label = { Text("Endereço de E-mail") },
                 singleLine = true,
                 modifier = Modifier
@@ -98,25 +92,17 @@ fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navContro
 
             OutlinedTextField(
                 value = senha,
-                onValueChange = { senha = it },
+                onValueChange = { viewModel.onSenhaChange(it) },
                 label = { Text("Senha") },
                 singleLine = true,
-                visualTransformation =
-                    if (senhaVisivel)
-                        VisualTransformation.None
-                    else
-                        PasswordVisualTransformation(),
+                visualTransformation = if (senhaVisivel) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
                 trailingIcon = {
-                    val image =
-                        if (senhaVisivel)
-                            Icons.Filled.Visibility
-                        else
-                            Icons.Filled.VisibilityOff
-                    IconButton(onClick = { senhaVisivel = !senhaVisivel }) {
-                        Icon(imageVector = image, "")//Implementar acessibilidade?
+                    val image = if (senhaVisivel) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                    IconButton(onClick = { viewModel.onToggleSenhaVisivel() }) {
+                        Icon(imageVector = image, contentDescription = null)
                     }
                 }
             )
@@ -129,11 +115,11 @@ fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navContro
             ) {
                 Checkbox(
                     checked = manterConectado,
-                    onCheckedChange ={ manterConectado = it }
+                    onCheckedChange = { viewModel.onToggleManterConectado() }
                 )
                 Text(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    text ="Mantenha-me conectado"
+                    text = "Mantenha-me conectado"
                 )
             }
 
@@ -141,10 +127,9 @@ fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navContro
 
             Button(
                 onClick = {
-                    validation(context, email, senha) { success, message ->
+                    viewModel.validarLogin(context) { success, message ->
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         if (success) {
-                            println("Sucesso")
                             navController.navigate("home")
                         }
                     }
@@ -156,6 +141,7 @@ fun signInScreen(context:Context,modifier: Modifier, usuario: Usuario, navContro
             ) {
                 Text("Continuar")
             }
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()

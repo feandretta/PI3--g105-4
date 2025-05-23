@@ -15,7 +15,7 @@ import projeto.integrador.data.model.Usuario
 import projeto.integrador.ui.screens.OnboardingScreen
 import projeto.integrador.ui.screens.ProfileScreen
 import projeto.integrador.ui.screens.SignUpScreen
-import projeto.integrador.ui.screens.signInScreen
+import projeto.integrador.ui.screens.signIn.SignInScreen
 import projeto.integrador.ui.screens.ConfigScreen
 
 //import projeto.integrador.ui.screens.SignInScreen
@@ -55,10 +55,9 @@ fun NavigationSetup(navController: NavHostController) {
         // Tela de login de usuários existentes
         composable("signIn"){
             val context = LocalContext.current
-            signInScreen(
+            SignInScreen(
                 context = context,
                 modifier = Modifier,
-                usuario = Usuario("","","",""),
                 navController = navController
             )
         }
