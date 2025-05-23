@@ -26,23 +26,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
-/** Composable helper para esconder status/navigation bars **/
-@RequiresApi(Build.VERSION_CODES.R)
-@Composable
-private fun HideSystemBars() {
-    val view = LocalView.current
-    // não executa no preview
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            // faz o conteúdo ocupar toda a área
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            // esconde status e nav bars
-            window.insetsController
-                ?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-        }
-    }
-}
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
@@ -50,8 +33,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier.fillMaxSize().systemBarsPadding(),
     navController: NavHostController
 ) {
-    // já esconde as system bars
-    HideSystemBars()
 
     val db = Firebase.firestore
     val auth = Firebase.auth
