@@ -10,11 +10,14 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import projeto.integrador.config.generateAccessToken
+import projeto.integrador.config.generateSaltPassword
+import projeto.integrador.config.encryptPassword
 import projeto.integrador.data.model.Access
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+//essas chamadas de db e auth são horrorosas dps vou criar um função de repositorio pra isso
 //função para cadastrar as senhas
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 suspend fun accessRegister(access: Access): Boolean{
@@ -25,6 +28,8 @@ suspend fun accessRegister(access: Access): Boolean{
         val uid = auth.currentUser?.uid ?: "uid"
 
         access.accessToken = generateAccessToken()
+        access.salt = generateSaltPassword()
+        access.senha = encryptPassword(access.salt + access.senha).toString()
 
         return try{
             db.collection("usuarios")
@@ -46,6 +51,7 @@ suspend fun accessRegister(access: Access): Boolean{
     return false
 }
 //retorna todos os acessos do usuário como uma lista de objetos do tipo documentSnapshot
+//DOCUMENT SNAPSHOT cotem o .ID do documento no firebase e .getData() pras informações de fato
 suspend fun getAccessByUser(): List<DocumentSnapshot> {
     val auth = Firebase.auth
     val db = Firebase.firestore
@@ -70,19 +76,20 @@ suspend fun getAccessByUser(): List<DocumentSnapshot> {
             }
     }
 }
-
-suspend fun getAccessByUser(accessId : DocumentSnapshot){
+//mesma coisa que um get normal mas esse você passa o id do acesso específico que você quer retornar
+// EM STRING PEDRÃO
+fun getAccessByUser(idAccess : String){
     val auth = Firebase.auth
     val db = Firebase.firestore
     val uid = auth.currentUser?.uid ?: "uid"
 
-    val Id = accessId.toString()
 
-    val docRef = db.collection("usuarios").document("uid").collection("accessos").document(Id)
+    val docRef = db.collection("usuarios").document(uid).collection("accessos").document(idAccess)
     docRef.get()
         .addOnSuccessListener { document ->
             if (document != null) {
                 Log.d("Get Access", "DocumentSnapshot data: ${document.data}")
+
             } else {
                 Log.d("Get Access", "No such document")
             }
@@ -92,10 +99,14 @@ suspend fun getAccessByUser(accessId : DocumentSnapshot){
         }
 }
 //passa o id e o acesso novo que ele edita
-suspend fun alterAccess(idAccess: String , accessAtualizado: Access): Boolean{
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+suspend fun alterAccess(idAccess: String, accessAtualizado: Access): Boolean{
     val auth = Firebase.auth
     val db = Firebase.firestore
     val uid = auth.currentUser?.uid ?: "uid"
+
+    accessAtualizado.accessToken = generateAccessToken()
+    accessAtualizado.senha = encryptPassword(accessAtualizado.salt + accessAtualizado.senha).toString()
 
     val docRef = db.collection("usuarios").document(uid).collection("acessos").document(idAccess)
 

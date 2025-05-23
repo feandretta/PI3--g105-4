@@ -5,6 +5,7 @@ class Access(categoria: String, dominio: String, email: String, senha: String){
     var categoria: String? = null
     var parceiro: String? = null
     var email: String? = null
+    var salt: String? = null
     var senha: String? = null
     var descricao: String? = null
     var accessToken: String? = null
