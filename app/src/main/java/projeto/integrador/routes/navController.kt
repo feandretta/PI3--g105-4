@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import projeto.integrador.data.model.Usuario
 import projeto.integrador.ui.screens.OnboardingScreen
 import projeto.integrador.ui.screens.ProfileScreen
-import projeto.integrador.ui.screens.SignUpScreen
+import projeto.integrador.ui.screens.signUp.SignUpScreen
 import projeto.integrador.ui.screens.signIn.SignInScreen
 import projeto.integrador.ui.screens.ConfigScreen
 
