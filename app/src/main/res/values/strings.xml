@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ProjetoIntegrador 105-4</string>
+    <string name="title_activity_account_add_screen">AccountAddScreen</string>
 </resources>

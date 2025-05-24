@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import projeto.integrador.data.model.Usuario
+import projeto.integrador.ui.screens.AccessAddScreen
 import projeto.integrador.ui.screens.OnboardingScreen
 import projeto.integrador.ui.screens.ProfileScreen
 import projeto.integrador.ui.screens.signUp.SignUpScreen
@@ -74,8 +75,13 @@ fun NavigationSetup(navController: NavHostController) {
             ProfileScreen(navController)
         }
 
+        composable("adicionarConta"){
+            AccessAddScreen(modifier = Modifier, navController)
+
+
         composable("settings"){
             ConfigScreen(modifier = Modifier,navController)
+
         }
     }
 }

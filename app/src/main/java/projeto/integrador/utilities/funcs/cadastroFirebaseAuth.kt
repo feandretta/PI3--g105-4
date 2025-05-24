@@ -84,9 +84,6 @@ suspend fun Cadastro(
     val auth = Firebase.auth
     val db = Firebase.firestore
 
-    println(criptografar(senha))
-
-
 
     return try {
         val authResult = auth.createUserWithEmailAndPassword(email, senha).await()
