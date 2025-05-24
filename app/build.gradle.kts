@@ -52,6 +52,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
 
+    // Material Design Icons
+    implementation("androidx.compose.material:material-icons-core:1.6.1")
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.runtime.android)
