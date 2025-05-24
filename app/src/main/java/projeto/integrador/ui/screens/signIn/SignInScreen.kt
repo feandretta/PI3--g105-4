@@ -74,7 +74,6 @@ fun SignInScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Email TextField
             OutlinedTextField(
                 state = viewModel.emailState,
                 label = { Text("Endereço de E-mail") },
@@ -82,14 +81,6 @@ fun SignInScreen(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             )
-
-            SecureTextField(
-                state = viewModel.senhaState,
-                label = {Text("Senha")},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-                )
 
             OutlinedSecureTextField(
                 state = viewModel.senhaState,

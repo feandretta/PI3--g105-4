@@ -50,11 +50,14 @@ fun NavigationSetup(navController: NavHostController) {
 
         // Registro de usuários e tela inicial de usuários novos
         composable("signUp") {
-            SignUpScreen(navController, Usuario("","","",""))
+            SignUpScreen(
+                context = context,
+                modifier = Modifier,
+                navController = navController
+            )
         }
         // Tela de login de usuários existentes
         composable("signIn"){
-            val context = LocalContext.current
             SignInScreen(
                 context = context,
                 modifier = Modifier,
@@ -62,7 +65,10 @@ fun NavigationSetup(navController: NavHostController) {
             )
         }
         composable("home"){
-            HomeScreen(modifier = Modifier,navController)
+            HomeScreen(
+                modifier = Modifier,
+                navController = navController
+            )
         }
         composable("profile"){
             ProfileScreen(navController)
