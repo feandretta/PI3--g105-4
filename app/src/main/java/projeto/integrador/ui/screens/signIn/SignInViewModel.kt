@@ -1,42 +1,28 @@
-package projeto.integrador.ui.screens.signIn
-
 import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import projeto.integrador.utilities.funcs.validation
 
 class SignInViewModel : ViewModel() {
+    val emailState = TextFieldState()
+    val senhaState = TextFieldState()
 
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> = _email
+    var manterConectado = mutableStateOf(false)
+    var senhaVisivel = mutableStateOf(false)
 
-    private val _senha = MutableStateFlow("")
-    val senha: StateFlow<String> = _senha
-
-    private val _manterConectado = MutableStateFlow(false)
-    val manterConectado: StateFlow<Boolean> = _manterConectado
-
-    private val _senhaVisivel = MutableStateFlow(false)
-    val senhaVisivel: StateFlow<Boolean> = _senhaVisivel
-
-    fun onEmailChange(newEmail: String) {
-        _email.value = newEmail
+    fun toggleSenhaVisivel() {
+        senhaVisivel.value = !senhaVisivel.value
     }
 
-    fun onSenhaChange(newSenha: String) {
-        _senha.value = newSenha
-    }
+    fun signIn(context: Context, onResult: (Boolean) -> Unit) {
+        val email = emailState.text.toString()
+        val senha = senhaState.text.toString()
 
-    fun onToggleSenhaVisivel() {
-        _senhaVisivel.value = !_senhaVisivel.value
-    }
-
-    fun onToggleManterConectado() {
-        _manterConectado.value = !_manterConectado.value
-    }
-
-    fun validarLogin(context: Context, onResult: (Boolean, String) -> Unit) {
-        validation(context, _email.value, _senha.value, onResult)
+        validation(context, email, senha) { success, message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            onResult(success)
+        }
     }
 }

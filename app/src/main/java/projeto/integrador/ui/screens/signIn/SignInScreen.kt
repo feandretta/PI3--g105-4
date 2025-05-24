@@ -1,5 +1,6 @@
 package projeto.integrador.ui.screens.signIn
 
+import SignInViewModel
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.TextObfuscationMode
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -24,11 +27,15 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SecureTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,15 +55,10 @@ fun SignInScreen(
     context: Context,
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModel: SignInViewModel = viewModel()
+    viewModel: SignInViewModel = remember { SignInViewModel() }
 ) {
-    val email by viewModel.email.collectAsState()
-    val senha by viewModel.senha.collectAsState()
-    val manterConectado by viewModel.manterConectado.collectAsState()
-    val senhaVisivel by viewModel.senhaVisivel.collectAsState()
-
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
@@ -72,6 +74,7 @@ fun SignInScreen(
                 contentDescription = "Logo",
                 modifier = Modifier.size(150.dp)
             )
+
             Text(
                 text = "Super ID",
                 fontSize = 28.sp,
@@ -80,29 +83,43 @@ fun SignInScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
+            // Email TextField
             OutlinedTextField(
-                value = email,
-                onValueChange = { viewModel.onEmailChange(it) },
+                state = viewModel.emailState,
                 label = { Text("Endereço de E-mail") },
-                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             )
 
-            OutlinedTextField(
-                value = senha,
-                onValueChange = { viewModel.onSenhaChange(it) },
+            SecureTextField(
+                state = viewModel.senhaState,
+                label = {Text("Senha")},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+                )
+
+            OutlinedSecureTextField(
+                state = viewModel.senhaState,
                 label = { Text("Senha") },
-                singleLine = true,
-                visualTransformation = if (senhaVisivel) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
+                textObfuscationMode =
+                    if (viewModel.senhaVisivel.value)
+                        TextObfuscationMode.Visible
+                    else
+                        TextObfuscationMode.RevealLastTyped,
                 trailingIcon = {
-                    val image = if (senhaVisivel) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    IconButton(onClick = { viewModel.onToggleSenhaVisivel() }) {
-                        Icon(imageVector = image, contentDescription = null)
+                    val icon =
+                        if (viewModel.senhaVisivel.value)
+                            Icons.Default.Visibility
+                        else
+                            Icons.Default.VisibilityOff
+
+                    IconButton(onClick = { viewModel.toggleSenhaVisivel() }) {
+                        Icon(icon, contentDescription = null)
                     }
                 }
             )
@@ -113,25 +130,22 @@ fun SignInScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Checkbox(
-                    checked = manterConectado,
-                    onCheckedChange = { viewModel.onToggleManterConectado() }
+                /*Checkbox(
+                    checked = viewModel.manterConectado,
+                    onCheckedChange = { viewModel.manterConectado = it }
                 )
                 Text(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    text = "Mantenha-me conectado"
-                )
+                    "Mantenha-me conectado",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )*/
             }
 
             Spacer(modifier = Modifier.height(36.dp))
 
             Button(
                 onClick = {
-                    viewModel.validarLogin(context) { success, message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        if (success) {
-                            navController.navigate("home")
-                        }
+                    viewModel.signIn(context) { success ->
+                        if (success) navController.navigate("home")
                     }
                 },
                 modifier = Modifier
@@ -148,7 +162,7 @@ fun SignInScreen(
             ) {
                 Text("Não tem uma conta? ", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
                 Text(
-                    text = "Registre-se aqui",
+                    "Registre-se aqui",
                     color = Color.Blue,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {
