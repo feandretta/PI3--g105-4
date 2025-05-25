@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
 
     private val permissions = arrayOf(
         Manifest.permission.CAMERA,
-        Manifest.permission.RECORD_AUDIO,
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_PHONE_STATE
