@@ -1,11 +1,7 @@
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,10 +15,9 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHostController){
+fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHostController) {
     val db = Firebase.firestore
     val auth = Firebase.auth
-
 
     val uid = auth.currentUser?.uid ?: "uid"
 
@@ -61,9 +56,11 @@ fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHo
                     color = MaterialTheme.colorScheme.primary
                 )
             } else {
-                Row (modifier = modifier.fillMaxWidth(),
+                Row(
+                    modifier = modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.SpaceBetween){
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     NavBar(navController)
                 }
                 Card(
@@ -88,6 +85,12 @@ fun HomeScreen(modifier: Modifier = Modifier.fillMaxSize(), navController: NavHo
                             fontSize = 20.sp,
                             style = MaterialTheme.typography.bodyLarge
                         )
+                        Spacer(modifier = Modifier.height(24.dp)) // espaçamento entre texto e botão
+                        Button(onClick = {
+                            navController.navigate("scanner")
+                        }) {
+                            Text("Abrir Scanner QR Code")
+                        }
                     }
                 }
             }
