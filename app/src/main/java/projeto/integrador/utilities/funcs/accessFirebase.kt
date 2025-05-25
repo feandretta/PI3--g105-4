@@ -22,7 +22,7 @@ import kotlin.coroutines.suspendCoroutine
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 suspend fun accessRegister(access: Access): Boolean{
     //ele não irá retornar caso a SENHA, CATEGORIA ou NOME sejam vazios os demais campos são opcionais
-    if(access.AccessIsEmpty()){
+    if(!access.AccessIsEmpty()){
         val auth = Firebase.auth
         val db = Firebase.firestore
         val uid = auth.currentUser?.uid ?: "uid"
