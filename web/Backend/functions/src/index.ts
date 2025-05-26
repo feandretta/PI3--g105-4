@@ -10,7 +10,7 @@ const { Timestamp } = admin.firestore;
 const corsMiddleware = cors({ origin: true });
 
 // 🔐 Gerar QR Code de login
-export const performAuth = functions.https.onRequest((req, res) => {
+export const performAuth = functions.https.onRequest(async (req, res) => {
     corsMiddleware(req, res, async () => {
         try {
             const { apiKey, siteUrl } = req.body;
@@ -29,10 +29,9 @@ export const performAuth = functions.https.onRequest((req, res) => {
                 status: "pending"
             });
 
-            const qrImage = await QRCode.toDataURL(loginToken);
-            return res.status(200).json({ qrCode: qrImage, loginToken });
+            return res.status(200).json({loginToken : loginToken });
         } catch (err) {
-            console.error("Erro ao gerar QR Code:", err);
+            console.error("Erro ao retornar token", err);
             return res.status(500).json({ error: "Erro interno" });
         }
     });
