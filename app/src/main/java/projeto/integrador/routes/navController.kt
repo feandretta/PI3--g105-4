@@ -19,6 +19,10 @@ import projeto.integrador.ui.screens.signIn.SignInScreen
 import projeto.integrador.ui.screens.ConfigScreen
 import projeto.integrador.ui.screens.addAccess.AddAccessViewModel
 import projeto.integrador.ui.screens.cadastro.AddAccessScreen
+import projeto.integrador.ui.screens.SignUpScreen
+import projeto.integrador.ui.screens.signInScreen
+import projeto.integrador.ui.screens.components.QrCodeScannerScreen
+
 
 //import projeto.integrador.ui.screens.SignInScreen
 
@@ -87,5 +91,17 @@ fun NavigationSetup(navController: NavHostController) {
                 navController = navController
             )
         }
+        composable("scanner") {
+            QrCodeScannerScreen { qrCode ->
+                // Mostra o resultado no log
+                android.util.Log.d("QRCode", "Código escaneado: $qrCode")
+
+                // Se quiser navegar de volta para home depois de ler:
+                navController.navigate("home") {
+                    popUpTo("scanner") { inclusive = true }
+                }
+            }
+        }
+
     }
 }
