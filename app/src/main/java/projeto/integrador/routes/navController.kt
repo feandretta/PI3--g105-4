@@ -17,10 +17,12 @@ import projeto.integrador.ui.screens.ProfileScreen
 import projeto.integrador.ui.screens.signUp.SignUpScreen
 import projeto.integrador.ui.screens.signIn.SignInScreen
 import projeto.integrador.ui.screens.ConfigScreen
+import projeto.integrador.ui.screens.addAccess.AddAccessViewModel
+import projeto.integrador.ui.screens.cadastro.AddAccessScreen
 
 //import projeto.integrador.ui.screens.SignInScreen
 
-@RequiresApi(Build.VERSION_CODES.R)
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun NavigationSetup(navController: NavHostController) {
 
@@ -74,13 +76,16 @@ fun NavigationSetup(navController: NavHostController) {
             ProfileScreen(navController)
         }
 
-        composable("adicionarConta") {
-            //AccessAddScreen(modifier = Modifier, navController)
-        }
-
         composable("settings"){
             ConfigScreen(modifier = Modifier,navController)
 
+        }
+
+        composable("addAccess"){
+            AddAccessScreen(
+                modifier = Modifier,
+                navController = navController
+            )
         }
     }
 }

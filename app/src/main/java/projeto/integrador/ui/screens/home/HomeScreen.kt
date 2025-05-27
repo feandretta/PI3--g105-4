@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
@@ -110,6 +111,13 @@ fun HomeScreen(
                     }
                 }
             },
+            floatingActionButton = {
+                androidx.compose.material3.FloatingActionButton(
+                    onClick = { navController.navigate("addAccess") }
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Cadastrar Senha")
+                }
+            },
             content = { innerPadding ->
                 Column(
                     modifier = Modifier
@@ -129,7 +137,6 @@ fun HomeScreen(
                         fontSize = 20.sp,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    Button(onClick = { viewModel.teste() }) { }
                 }
             }
         )
