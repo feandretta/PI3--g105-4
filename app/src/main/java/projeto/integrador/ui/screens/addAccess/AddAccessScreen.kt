@@ -63,14 +63,7 @@ fun AddAccessScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            OutlinedButton(
-                onClick = {
-                    // TODO: Navegar para a tela de categorias
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(viewModel.categoria.value)
-            }
+            Text("Selecionar categorias vai aq dps")
 
             OutlinedTextField(
                 state = viewModel.url.value,

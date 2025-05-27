@@ -1,6 +1,7 @@
 package projeto.integrador.ui.screens.addAccess
 
 import android.os.Build
+import android.system.Os.access
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.text.input.TextFieldState
@@ -27,12 +28,13 @@ class AddAccessViewModel : ViewModel() {
     fun salvar() {
         viewModelScope.launch {
             val access = Access(
-                nome = nome.toString(),
-                categoria = categoria.toString(),
-                dominio = url.toString(),
-                email = email.toString(),
-                senha = senha.toString(),
-                descricao = descricao.toString()
+                nome = nome.value.text.toString(),
+                //categoria = categoria.value.text.toString(),
+                categoria = categoria.value,
+                dominio = url.value.text.toString(),
+                email = email.value.text.toString(),
+                senha = senha.value.text.toString(),
+                descricao = descricao.value.text.toString()
             )
             val result = accessRegister(access)
 
