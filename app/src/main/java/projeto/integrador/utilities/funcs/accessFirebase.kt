@@ -113,7 +113,7 @@ suspend fun alterAccess(idAccess: String, accessAtualizado: Access): Boolean{
     return suspendCoroutine { continuation ->
         docRef.update(mapOf("nome" to accessAtualizado.nome,
                             "categoria" to accessAtualizado.categoria,
-                            "parceiro" to accessAtualizado.parceiro,
+                            "parceiro" to accessAtualizado.dominio,
                             "email" to accessAtualizado.email,
                             "senha" to accessAtualizado.senha,
                             "descricao" to accessAtualizado.descricao))
