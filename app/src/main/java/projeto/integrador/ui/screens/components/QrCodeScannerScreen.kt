@@ -2,6 +2,7 @@ package projeto.integrador.ui.screens.components
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.*
@@ -18,6 +19,7 @@ import androidx.camera.core.*
 import java.util.concurrent.Executors
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.fillMaxSize
+import projeto.integrador.utilities.funcs.loginQrCode
 
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
@@ -54,6 +56,14 @@ fun QrCodeScannerScreen(
                     .addOnSuccessListener { barcodes ->
                         barcodes.firstOrNull()?.rawValue?.let {
                             onQrCodeScanned(it)
+                            loginQrCode(it) { success, exception ->
+                                if (success) {
+                                    Log.d("login Qr Code", "$success")
+                                } else {
+                                    Log.d("login Qr Code", "$exception")
+                                }
+                            }
+
                         }
                     }
                     .addOnCompleteListener {
