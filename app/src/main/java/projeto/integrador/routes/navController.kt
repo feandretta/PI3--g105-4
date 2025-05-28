@@ -4,6 +4,7 @@ package projeto.integrador.routes
 import HomeScreen
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -48,7 +49,10 @@ fun NavigationSetup(navController: NavHostController) {
 
         // Tela de onboarding
         composable("onboarding"){
-            OnboardingScreen(navHostController = navController,sharedPreferences)
+            OnboardingScreen(
+                navController = navController,
+                sharedPreferences = sharedPreferences
+            )
         }
 
         // Registro de usuários e tela inicial de usuários novos
@@ -91,7 +95,7 @@ fun NavigationSetup(navController: NavHostController) {
         composable("scanner") {
             QrCodeScannerScreen { qrCode ->
                 // Mostra o resultado no log
-                android.util.Log.d("QRCode", "Código escaneado: $qrCode")
+                Log.d("QRCode", "Código escaneado: $qrCode")
 
                 // Se quiser navegar de volta para home depois de ler:
                 navController.navigate("home") {

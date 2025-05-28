@@ -50,7 +50,7 @@ fun SignUpScreen(
 
             Text(
                 text = "Super ID",
-                fontSize = 28.sp,
+                style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 24.dp)
@@ -122,19 +122,7 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Checkbox(
-                    checked = viewModel.termosAceitos.value,
-                    onCheckedChange = { viewModel.termosAceitos.value = it }
-                )
-                Text(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    text = "Li e estou de acordo com os Termos de Uso e Política de Privacidade"
-                )
-            }
+
 
             Spacer(modifier = Modifier.height(36.dp))
 
@@ -149,18 +137,25 @@ fun SignUpScreen(
                     .height(48.dp),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Criar conta")
+                Text(
+                    "Criar conta",
+                    style = MaterialTheme.typography.bodyLarge
+                    )
             }
 
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Já tem uma conta? ", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+                Text(
+                    "Já tem uma conta? ",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyLarge
+                )
                 Text(
                     "Faça login",
-                    color = Color.Blue,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.clickable {
                         navController.navigate("signIn")
                     }
