@@ -43,7 +43,7 @@ import kotlinx.coroutines.tasks.await
 /**
  * Função auxiliar para esconder as barras do sistema (status bar e navigation bar).
  * Isso permite que o conteúdo ocupe toda a tela.
- * 
+ *
  * @RequiresApi(Build.VERSION_CODES.R) Requer Android 11 (API 30) ou superior
  */
 @RequiresApi(Build.VERSION_CODES.R)
@@ -51,7 +51,7 @@ import kotlinx.coroutines.tasks.await
 private fun HideSystemBars() {
     // Obtém a view atual do Compose
     val view = LocalView.current
-    
+
     // Verifica se não está em modo de pré-visualizaçã
     if (!view.isInEditMode) {
         // SideEffect garante que este código seja executado apenas uma vez por composição
@@ -68,7 +68,7 @@ private fun HideSystemBars() {
 
 /**
  * Tela inicial do aplicativo que exibe opções principais para o usuário.
- * 
+ *
  * @param modifier Modificador para personalizar o layout da tela
  * @param navController Controlador de navegação para gerenciar a navegação entre telas
  */
@@ -84,7 +84,7 @@ fun HomeScreen(
     // Referências ao Firebase
     val db = Firebase.firestore
     val auth = Firebase.auth
-    
+
     // Estados da UI
     var nomeUsuario by remember { mutableStateOf<String?>(null) }  // Nome do usuário logado
     var isLoading by remember { mutableStateOf(true) }  // Estado de carregamento
@@ -104,7 +104,7 @@ fun HomeScreen(
             // Busca os dados do usuário no Firestore
             val doc = db.collection("usuarios").document(currentUser.uid).get().await()
             nomeUsuario = doc.getString("nome")
-            
+
             // Verifica se o nome do usuário foi encontrado
             if (nomeUsuario == null) {
                 errorMessage = "Nome do usuário não encontrado"
@@ -216,7 +216,7 @@ fun HomeScreen(
                             description = "Ajustar preferências do aplicativo",
                             onClick = { navController.navigate("settings")}
                         )
-                        
+
                         // Botão de sair (logout)
                         Button(
                             onClick = {
@@ -245,7 +245,7 @@ fun HomeScreen(
 
 /**
  * Componente reutilizável que exibe um card de opção na tela inicial.
- * 
+ *
  * @param icon Ícone a ser exibido no card
  * @param title Título da opção
  * @param description Descrição detalhada da opção

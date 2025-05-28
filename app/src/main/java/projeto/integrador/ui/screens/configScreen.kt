@@ -79,7 +79,7 @@ fun ConfigScreen(
 ) {
     // Oculta as barras do sistema
     HideSystemBars()
-    
+
     // Contexto atual da aplicação
     val context = LocalContext.current
 
@@ -88,7 +88,7 @@ fun ConfigScreen(
     var notificationsEnabled by remember { mutableStateOf(true) }
     var biometricEnabled by remember { mutableStateOf(false) }
     var language by remember { mutableStateOf("Português") }
-    
+
     // Instância do Firebase Auth
     val auth = Firebase.auth
 
@@ -212,7 +212,7 @@ private fun ConfigSection(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(vertical = 8.dp)
         )
-        
+
         // Card que contém os itens da seção
         Card(
             modifier = Modifier.fillMaxWidth(),
