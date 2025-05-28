@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // 🔗 Endereço local do emulador Firebase Functions
 const baseURL = "http://127.0.0.1:5002/projeto-integrador-8e633/us-central1";
@@ -11,15 +11,52 @@ export default function LoginQR() {
     const [erro, setErro] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [polling, setPolling] = useState<number | null>(null);
+    const [timeLeft, setTimeLeft] = useState<number | null>(null);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Limpa o intervalo quando o componente é desmontado
+    // Limpa os intervalos quando o componente é desmontado
     useEffect(() => {
         return () => {
             if (polling) {
                 clearInterval(polling);
             }
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
         };
     }, [polling]);
+
+    // Efeito para controlar o contador regressivo
+    useEffect(() => {
+        if (timeLeft === null) return;
+        
+        if (timeLeft <= 0) {
+            setQRCode(null);
+            setToken(null);
+            setErro("Tempo esgotado! Por favor, gere um novo QR Code.");
+            if (polling) {
+                clearInterval(polling);
+                setPolling(null);
+            }
+            return;
+        }
+
+        timerRef.current = setTimeout(() => {
+            setTimeLeft(timeLeft - 1);
+        }, 1000);
+
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [timeLeft, polling]);
+
+    const formatTime = (seconds: number): string => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };
 
     const verificarStatusLogin = async (token: string) => {
         try {
@@ -60,6 +97,7 @@ export default function LoginQR() {
             if (res.data.qrCode) {
                 setQRCode(res.data.qrCode);
                 setToken(res.data.loginToken);
+                setTimeLeft(90); // 1 minuto e 30 segundos
                 
                 // Iniciar verificação periódica do status de autenticação
                 if (res.data.loginToken) {
@@ -94,9 +132,22 @@ export default function LoginQR() {
                             alt="QR Code para autenticação"
                             className="w-64 h-64 border-4 border-white rounded-xl mb-4"
                         />
-                        <p className="text-center text-zinc-300 mb-4">
+                        <p className="text-center text-zinc-300 mb-2">
                             Escaneie este QR Code com o aplicativo móvel para fazer login
                         </p>
+                        {timeLeft !== null && (
+                            <div className="mb-4 text-center">
+                                <p className="text-yellow-400 font-medium">
+                                    Tempo restante: {formatTime(timeLeft)}
+                                </p>
+                                <div className="w-full bg-gray-700 rounded-full h-2.5 mt-2">
+                                    <div 
+                                        className="bg-blue-600 h-2.5 rounded-full" 
+                                        style={{ width: `${(timeLeft / 90) * 100}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                        )}
                         <button
                             onClick={() => {
                                 setQRCode(null);
