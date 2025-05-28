@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 // 🔗 Endereço local do emulador Firebase Functions
-const baseURL = "http://127.0.0.1:5002/projeto-integrador-8e633/us-central1";
+const baseURL = "https://us-central1-projeto-integrador-8e633.cloudfunctions.net";
 
 
 export default function LoginQR() {
