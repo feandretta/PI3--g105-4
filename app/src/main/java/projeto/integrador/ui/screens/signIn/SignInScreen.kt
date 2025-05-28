@@ -61,7 +61,7 @@ fun SignInScreen(
                 .fillMaxWidth()
         ) {
             Image(
-                painter = painterResource(R.drawable.placeholder),
+                painter = painterResource(R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier.size(150.dp)
             )
