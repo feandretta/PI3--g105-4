@@ -61,6 +61,7 @@ fun ConfigScreen(
     var language by remember { mutableStateOf("Português") }
     val auth = Firebase.auth
 
+    val auth = Firebase.auth
     Scaffold(
         modifier = modifier,
         topBar = {
