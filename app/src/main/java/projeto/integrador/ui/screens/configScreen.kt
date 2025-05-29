@@ -29,6 +29,8 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import NavBar
 import android.widget.Toast
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
@@ -58,6 +60,7 @@ fun ConfigScreen(
     var biometricEnabled by remember { mutableStateOf(false) }
     var language by remember { mutableStateOf("Português") }
 
+    val auth = Firebase.auth
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -113,7 +116,7 @@ fun ConfigScreen(
                     icon = Icons.Filled.Lock,
                     title = "Alterar Senha",
                     description = "Modificar sua senha de acesso",
-                    onClick = { navController.navigate("alterarSenha") }
+                    onClick = { auth.sendPasswordResetEmail(auth.currentUser?.email.toString()) }
                 )
             }
 
