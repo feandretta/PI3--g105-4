@@ -11,7 +11,7 @@ activityCompose = "1.10.1"
 composeBom = "2025.05.01"
 navigationCompose = "2.8.9"
 navigationRuntimeKtx = "2.8.9"
-securityCryptoVersion = "1.0.0"
+securityCryptoVersion = "1.1.0-alpha06"
 constraintlayout = "2.2.0"
 navigationRuntimeAndroid = "2.9.0-rc01"
 material3 = "1.4.0-alpha15"
@@ -57,4 +57,3 @@ camera-view = { module = "androidx.camera:camera-view", version = "1.3.0" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
