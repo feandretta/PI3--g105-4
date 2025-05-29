@@ -29,7 +29,7 @@ Siga o fluxo de branches:
 - **feature/*:** Novas funcionalidades.
 
 ## Cronograma
-- **Release Final:** 01 de junho de 2025
+- **Release Final:** 30 de junho de 2025
 
 ## Contato
 Equipe SuperID – Contate os orientadores para mais informações.
