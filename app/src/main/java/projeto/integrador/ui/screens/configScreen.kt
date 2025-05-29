@@ -60,8 +60,6 @@ fun ConfigScreen(
     var biometricEnabled by remember { mutableStateOf(false) }
     var language by remember { mutableStateOf("Português") }
     val auth = Firebase.auth
-
-    val auth = Firebase.auth
     Scaffold(
         modifier = modifier,
         topBar = {

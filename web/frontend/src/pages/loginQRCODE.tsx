@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // 🔗 Endereço local do emulador Firebase Functions
 const baseURL = "https://us-central1-projeto-integrador-8e633.cloudfunctions.net";
@@ -14,7 +15,10 @@ export default function LoginQR() {
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [userData, setUserData] = useState<any>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isScanning, setIsScanning] = useState(false);
+    const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'success' | 'error'>('idle');
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     // Limpa os intervalos quando o componente é desmontado
     useEffect(() => {
@@ -70,12 +74,20 @@ export default function LoginQR() {
                     clearInterval(polling);
                     setPolling(null);
                 }
-                setUserData(res.data.user);
-                setIsAuthenticated(true);
-                setTimeLeft(null);
+                setScanStatus('success');
+                // Pequeno atraso para mostrar a animação de sucesso
+                setTimeout(() => {
+                    setUserData(res.data.user);
+                    setIsAuthenticated(true);
+                    setTimeLeft(null);
+                    setScanStatus('idle');
+                }, 1000);
+            } else if (res.data.status === 'pending') {
+                setScanStatus('scanning');
             }
         } catch (err) {
             console.error("Erro ao verificar status do login", err);
+            setScanStatus('error');
         }
     };
 
@@ -128,15 +140,35 @@ export default function LoginQR() {
             <h1 className="text-2xl font-bold mb-6">Login com QR Code</h1>
             
             <div className="bg-zinc-800 p-8 rounded-xl shadow-lg max-w-md w-full">
-                {qrCode ? (
+                {qrCode && !isAuthenticated ? (
                     <div className="flex flex-col items-center">
-                        <img
-                            src={qrCode}
-                            alt="QR Code para autenticação"
-                            className="w-64 h-64 border-4 border-white rounded-xl mb-4"
-                        />
-                        <p className="text-center text-zinc-300 mb-2">
-                            Escaneie este QR Code com o aplicativo móvel para fazer login
+                        <div className={`relative transition-all duration-500 ${scanStatus === 'success' ? 'scale-110' : ''}`}>
+                            <img
+                                src={qrCode}
+                                alt="QR Code para autenticação"
+                                className={`w-64 h-64 border-4 ${scanStatus === 'scanning' ? 'border-yellow-500 animate-pulse' : scanStatus === 'success' ? 'border-green-500' : 'border-white'} rounded-xl mb-4 transition-all duration-300`}
+                            />
+                            {scanStatus === 'scanning' && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-xl">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+                                </div>
+                            )}
+                            {scanStatus === 'success' && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="bg-green-500/90 rounded-full p-2 animate-ping">
+                                        <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <p className={`text-center mb-4 transition-all duration-300 ${scanStatus === 'scanning' ? 'text-yellow-400' : 'text-zinc-300'}`}>
+                            {scanStatus === 'scanning' 
+                                ? 'QR Code escaneado! Aguardando confirmação...'
+                                : scanStatus === 'success'
+                                ? 'Autenticação confirmada!'
+                                : 'Escaneie este QR Code com o aplicativo móvel para fazer login'}
                         </p>
                         {timeLeft !== null && (
                             <div className="mb-4 text-center">
@@ -182,8 +214,16 @@ export default function LoginQR() {
                 )}
 
                 {isAuthenticated && userData && (
-                    <div className="mt-6 p-6 bg-green-900/20 border border-green-800 rounded-lg">
-                        <h2 className="text-xl font-bold text-green-400 mb-4">Login realizado com sucesso!</h2>
+                    <div className="animate-fade-in">
+                        <div className="text-center mb-6">
+                            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <h2 className="text-2xl font-bold text-green-400 mb-2">Login realizado com sucesso!</h2>
+                            <p className="text-zinc-400">Bem-vindo(a) de volta</p>
+                        </div>
                         <div className="space-y-3">
                             <p className="text-green-300">
                                 <span className="font-medium">Nome:</span> {userData.name || 'Não informado'}
@@ -201,17 +241,32 @@ export default function LoginQR() {
                                 </div>
                             )}
                         </div>
-                        <button
-                            onClick={() => {
-                                setUserData(null);
-                                setIsAuthenticated(false);
-                                setToken(null);
-                                setQRCode(null);
-                            }}
-                            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
-                        >
-                            Fazer logout
-                        </button>
+                        <div className="mt-6 space-y-4">
+                            <button
+                                onClick={() => {
+                                    setUserData(null);
+                                    setIsAuthenticated(false);
+                                    setToken(null);
+                                    setQRCode(null);
+                                    setScanStatus('idle');
+                                }}
+                                className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                            >
+                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                <span>Fazer logout</span>
+                            </button>
+                            <button
+                                onClick={() => {
+                                    // Navegar para o dashboard ou página inicial
+                                    alert('Redirecionando para o dashboard...');
+                                }}
+                                className="w-full px-4 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-medium transition-colors"
+                            >
+                                Ir para o Dashboard
+                            </button>
+                        </div>
                     </div>
                 )}
 
