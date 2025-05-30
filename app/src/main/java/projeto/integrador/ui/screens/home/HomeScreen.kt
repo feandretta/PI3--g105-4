@@ -2,6 +2,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,10 +51,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import projeto.integrador.R
+import projeto.integrador.data.model.Access
+import projeto.integrador.ui.screens.components.QrCodeScannerScreen
 import projeto.integrador.ui.screens.home.HomeViewModel
+import projeto.integrador.utilities.funcs.CryptoUtils
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +66,7 @@ import projeto.integrador.ui.screens.home.HomeViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModel: HomeViewModel = remember { HomeViewModel() }
+    viewModel: HomeViewModel = viewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -73,14 +79,22 @@ fun HomeScreen(
         NavItem("profile", Icons.Default.Person)
     )
 
-    val accessList by viewModel.accessItems.collectAsState(initial = emptyList())
+    val accessList by viewModel.accessItems.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadAccessItems()
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
                 Spacer(modifier = Modifier.height(48.dp))
-                // categorias vao aq
+                Text(
+                    text = "Categorias (em breve)",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
     ) {
@@ -94,9 +108,7 @@ fun HomeScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = {
-                            navController.navigate("settings")
-                        }) {
+                        IconButton(onClick = { navController.navigate("settings") }) {
                             Icon(Icons.Default.Settings, contentDescription = "Configurações")
                         }
                     }
@@ -110,12 +122,12 @@ fun HomeScreen(
                             onClick = {
                                 selectedItem = item.route
                                 when (item.route) {
-                                    "scanner" -> navController.navigate("scanner")
+                                    "scanner" -> selectedItem = item.route
                                     "profile" -> navController.navigate("profile")
-                                    // "home" já está na tela atual
+                                    // "home" não navega, já estamos nela
                                 }
                             },
-                            icon = { Icon(item.icon, contentDescription = item.route.capitalize()) },
+                            icon = { Icon(item.icon, contentDescription = item.route) },
                             label = { Text(item.route.replaceFirstChar { it.uppercase() }) }
                         )
                     }
@@ -129,63 +141,77 @@ fun HomeScreen(
                 }
             },
             content = { innerPadding ->
-                // Scrollable list of Access cards
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    if (accessList.isEmpty()) {
-                        item {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.placeholder),
-                                    contentDescription = "Logo",
-                                    modifier = Modifier.size(120.dp)
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Text(
-                                    text = "Nenhum acesso cadastrado."
-                                )
+                when (selectedItem) {
+                    "scanner" -> {
+                        QrCodeScannerScreen(
+                            onQrCodeScanned = { qrValue ->
+                                // Você pode salvar, navegar, ou processar o valor aqui.
+                                println("QR Code lido: $qrValue")
                             }
-                        }
-                    } else {
-                        items(accessList) { access ->
-                            Card(
+                        )
+                    }
+
+                    "home" -> {
+                        if (accessList.isEmpty()) {
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight(),
-                                shape = MaterialTheme.shapes.medium,
-                                elevation = CardDefaults.cardElevation(4.dp)
+                                    .padding(innerPadding)
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text(
-                                        text = access.nome.toString(),
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = access.email.toString(),
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = "****${access.senha.toString().takeLast(4)}",
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
+                                Text("Nenhum acesso cadastrado.")
+                            }
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .padding(innerPadding)
+                                    .fillMaxSize(),
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(accessList) { access ->
+                                    AccessCard(access = access)
                                 }
                             }
+                        }
+                    }
+
+                    "profile" -> {
+                        // Coloque aqui a tela de perfil ou outro conteúdo.
+                        Box(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Perfil (em desenvolvimento)")
                         }
                     }
                 }
             }
         )
+    }
+}
+
+@Composable
+fun AccessCard(access: Access) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = access.nome.toString(), style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = access.email.toString(), style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = CryptoUtils.decrypt(access.senha.toString()),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 

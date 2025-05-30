@@ -16,11 +16,23 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import androidx.camera.core.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import java.util.concurrent.Executors
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import projeto.integrador.utilities.funcs.loginQrCode
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
 fun QrCodeScannerScreen(
@@ -57,13 +69,9 @@ fun QrCodeScannerScreen(
                         barcodes.firstOrNull()?.rawValue?.let {
                             onQrCodeScanned(it)
                             loginQrCode(it) { success, exception ->
-                                if (success) {
-                                    Log.d("login Qr Code", "$success")
-                                } else {
-                                    Log.d("login Qr Code", "$exception")
-                                }
+                                Log.d("login Qr Code", success.toString())
+                                exception?.let { Log.d("login Qr Code", it.toString()) }
                             }
-
                         }
                     }
                     .addOnCompleteListener {
@@ -79,8 +87,18 @@ fun QrCodeScannerScreen(
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, analysis)
     }
 
-    AndroidView(
-        factory = { previewView },
-        modifier = Modifier.fillMaxSize()
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        AndroidView(
+            factory = { previewView },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(250.dp)
+                .border(2.dp, Color.White, shape = RoundedCornerShape(8.dp))
+        )
+    }
 }
+
