@@ -2,9 +2,7 @@
 package projeto.integrador.ui.screens
 
 // Imports do Android
-import android.app.Activity
 import android.os.Build
-import android.view.WindowInsets
 import android.widget.Toast
 
 // Imports do Jetpack Compose para UI
@@ -17,52 +15,26 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 // Navegação
-import androidx.navigation.NavHostController
 
 // Firebase Authentication
 import com.google.firebase.auth.auth
 
 // Componentes locais
-import NavBar
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.view.WindowCompat
 import com.google.firebase.Firebase
 
-/**
- * Função para ocultar as barras do sistema (status bar e navigation bar).
- * Esta função é compatível apenas com Android R (API 30) e superiores.
- */
-@RequiresApi(Build.VERSION_CODES.R)
-@Composable
-private fun HideSystemBars() {
-    val view = LocalView.current
-    // Verifica se não está em modo de pré-visualização do Compose
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            // Configura a janela para desenhar atrás das barras do sistema
-            WindowCompat.setDecorFitsSystemWindows(window, false)
-            // Oculta as barras de status e navegação
-            window.insetsController
-                ?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
-        }
-    }
-}
+
 
 /**
  * Tela de configurações do aplicativo.
@@ -74,11 +46,8 @@ private fun HideSystemBars() {
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun ConfigScreen(
-    modifier: Modifier = Modifier.fillMaxSize(),
-    navController: NavHostController
+    modifier: Modifier = Modifier.fillMaxSize().systemBarsPadding(),
 ) {
-    // Oculta as barras do sistema
-    HideSystemBars()
 
     // Contexto atual da aplicação
     val context = LocalContext.current
@@ -93,13 +62,7 @@ fun ConfigScreen(
     val auth = Firebase.auth
 
     Scaffold(
-        modifier = modifier,
-        topBar = {
-            NavBar(
-                navController = navController,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        modifier = modifier
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -434,11 +397,4 @@ private fun ConfigDropdown(
             )
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.R)
-@Preview
-@Composable
-fun ConfigScreenPreview() {
-    ConfigScreen(navController = NavHostController(LocalContext.current))
 }

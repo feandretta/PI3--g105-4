@@ -30,7 +30,7 @@ import com.google.firebase.ktx.Firebase
 
 // Imports locais
 import projeto.integrador.data.model.Category
-import projeto.integrador.utilities.funcs.CriarCategoriaDialog
+import projeto.integrador.utilities.CriarCategoriaDialog
 
 /**
  * Tela que exibe a lista de categorias do usuário.

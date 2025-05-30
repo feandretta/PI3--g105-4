@@ -11,10 +11,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
-import projeto.integrador.presentation.theme.ui.ProjetoIntegrador1054Theme
+import projeto.integrador.ui.theme.ProjetoIntegrador1054Theme
 import projeto.integrador.routes.NavigationSetup
-import projeto.integrador.utilities.funcs.CryptoUtils
-import projeto.integrador.utilities.funcs.requestPhoneStatePermission
+import projeto.integrador.utilities.CryptoUtils
+import projeto.integrador.utilities.requestPhoneStatePermission
 
 class MainActivity : ComponentActivity() {
 

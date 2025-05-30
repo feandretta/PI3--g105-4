@@ -1,4 +1,4 @@
-package projeto.integrador.utilities.funcs
+package projeto.integrador.utilities
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

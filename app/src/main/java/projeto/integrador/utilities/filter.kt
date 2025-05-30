@@ -1,4 +1,4 @@
-package projeto.integrador.utilities.funcs
+package projeto.integrador.utilities
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth

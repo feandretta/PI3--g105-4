@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import projeto.integrador.data.model.Access
-import projeto.integrador.utilities.funcs.getAccessByUser
+import projeto.integrador.utilities.getAccessByUser
 
 class HomeViewModel : ViewModel() {
 

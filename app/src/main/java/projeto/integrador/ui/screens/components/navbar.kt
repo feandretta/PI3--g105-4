@@ -1,4 +1,4 @@
-// ... (imports existentes)
+package projeto.integrador.ui.screens.components// ... (imports existentes)
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
-import projeto.integrador.utilities.funcs.CriarCategoriaDialog
+import projeto.integrador.utilities.CriarCategoriaDialog
 
 @Composable
 fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {

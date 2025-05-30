@@ -1,4 +1,4 @@
-package projeto.integrador.presentation.theme.ui
+package projeto.integrador.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

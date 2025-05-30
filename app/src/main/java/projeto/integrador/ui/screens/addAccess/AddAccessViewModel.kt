@@ -1,17 +1,14 @@
 package projeto.integrador.ui.screens.addAccess
 
 import android.os.Build
-import android.system.Os.access
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import projeto.integrador.data.model.Access
-import projeto.integrador.utilities.funcs.CryptoUtils
-import projeto.integrador.utilities.funcs.accessRegister
+import projeto.integrador.utilities.accessRegister
 
 class AddAccessViewModel : ViewModel() {
     val nome = mutableStateOf("")

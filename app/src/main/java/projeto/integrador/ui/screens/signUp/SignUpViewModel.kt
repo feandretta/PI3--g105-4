@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import projeto.integrador.utilities.funcs.Cadastro
+import projeto.integrador.utilities.Cadastro
 
 class SignUpViewModel : ViewModel() {
     val nomeState = TextFieldState()

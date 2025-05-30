@@ -1,4 +1,4 @@
-package projeto.integrador.utilities.funcs
+package projeto.integrador.utilities
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,6 +12,7 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -77,22 +78,22 @@ private suspend fun createDefaultCategories(userId: String) {
         hashMapOf(
             "name" to "Sites Web",
             "color" to "#2196F3", // Verde
-            "createdAt" to com.google.firebase.Timestamp.now()
+            "createdAt" to Timestamp.now()
         ),
         hashMapOf(
             "name" to "Apps",
             "color" to "#4CAF50", // Azul
-            "createdAt" to com.google.firebase.Timestamp.now()
+            "createdAt" to Timestamp.now()
         ),
         hashMapOf(
             "name" to "Alimentação",
             "color" to "#9C27B0", // Roxo
-            "createdAt" to com.google.firebase.Timestamp.now()
+            "createdAt" to Timestamp.now()
         ),
         hashMapOf(
             "name" to "Lazer",
             "color" to "#9C27B0", // Roxo
-            "createdAt" to com.google.firebase.Timestamp.now()
+            "createdAt" to Timestamp.now()
     )
     )
 

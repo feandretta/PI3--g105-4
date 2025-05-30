@@ -80,12 +80,9 @@ fun NavigationSetup(navController: NavHostController) {
         composable("categorias") {
             CategoriasScreen(navController = navController)
         }
-        composable("profile"){
-            ProfileScreen(navController)
-        }
 
         composable("settings"){
-            ConfigScreen(modifier = Modifier,navController)
+            ConfigScreen()
 
         }
 
@@ -94,17 +91,6 @@ fun NavigationSetup(navController: NavHostController) {
                 modifier = Modifier,
                 navController = navController
             )
-        }
-        composable("scanner") {
-            QrCodeScannerScreen { qrCode ->
-                // Mostra o resultado no log
-                Log.d("QRCode", "Código escaneado: $qrCode")
-
-                // Se quiser navegar de volta para home depois de ler:
-                navController.navigate("home") {
-                    popUpTo("scanner") { inclusive = true }
-                }
-            }
         }
 
     }

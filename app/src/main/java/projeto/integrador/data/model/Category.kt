@@ -2,7 +2,6 @@ package projeto.integrador.data.model
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
-import com.google.firebase.firestore.Exclude
 
 /**
  * Classe que representa uma categoria de despesa/receita do usuário

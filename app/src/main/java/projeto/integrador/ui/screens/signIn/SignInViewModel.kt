@@ -3,7 +3,7 @@ import android.widget.Toast
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import projeto.integrador.utilities.funcs.validation
+import projeto.integrador.utilities.validation
 
 class SignInViewModel : ViewModel() {
     val emailState = TextFieldState()
