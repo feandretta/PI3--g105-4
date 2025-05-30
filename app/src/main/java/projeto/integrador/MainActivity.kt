@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import projeto.integrador.ui.theme.ProjetoIntegrador1054Theme
 import projeto.integrador.routes.NavigationSetup
-import projeto.integrador.utilities.CryptoUtils
 import projeto.integrador.utilities.requestPhoneStatePermission
 
 class MainActivity : ComponentActivity() {
@@ -28,8 +27,6 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        CryptoUtils.init(this)
 
         // Primeiro: pedir permissões
         checkPermissions()

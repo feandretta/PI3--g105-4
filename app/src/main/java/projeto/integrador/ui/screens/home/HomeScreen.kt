@@ -54,7 +54,6 @@ import projeto.integrador.ui.screens.ConfigScreen
 import projeto.integrador.ui.screens.components.AccessCard
 import projeto.integrador.ui.screens.components.QrCodeScannerScreen
 import projeto.integrador.ui.screens.home.HomeViewModel
-import projeto.integrador.utilities.CryptoUtils
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3Api::class)

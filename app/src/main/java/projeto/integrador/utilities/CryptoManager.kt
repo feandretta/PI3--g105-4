@@ -8,7 +8,7 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
-class CryptoManager {
+object CryptoManager {
 
     //Cria uma chave e guarda no Keystore, so é chamada quando nao tem chave ainda
     private fun createSecretKey(): SecretKey {

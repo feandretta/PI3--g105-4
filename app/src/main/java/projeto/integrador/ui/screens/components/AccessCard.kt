@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import projeto.integrador.data.model.Access
-import projeto.integrador.utilities.CryptoUtils
+import projeto.integrador.utilities.CryptoManager
 
 @Composable
 fun AccessCard(access: Access) {
@@ -30,7 +30,7 @@ fun AccessCard(access: Access) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = access.email.toString(), style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = CryptoUtils.decrypt(access.senha.toString()), style = MaterialTheme.typography.bodySmall)
+            Text(text = CryptoManager.decrypt(access.senha.toString()), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
