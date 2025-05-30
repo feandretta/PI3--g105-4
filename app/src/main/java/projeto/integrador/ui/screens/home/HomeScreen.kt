@@ -1,6 +1,5 @@
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,22 +9,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,17 +45,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import projeto.integrador.R
 import projeto.integrador.data.model.Access
+import projeto.integrador.ui.screens.ConfigScreen
 import projeto.integrador.ui.screens.components.QrCodeScannerScreen
 import projeto.integrador.ui.screens.home.HomeViewModel
-import projeto.integrador.utilities.funcs.CryptoUtils
+import projeto.integrador.utilities.CryptoUtils
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,12 +66,12 @@ fun HomeScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    var selectedItem by remember { mutableStateOf("home") }
+    var selectedItem by remember { mutableStateOf("Senhas") }
 
     val navItems = listOf(
-        NavItem("home", Icons.Default.Home),
-        NavItem("scanner", Icons.Default.QrCodeScanner),
-        NavItem("profile", Icons.Default.Person)
+        NavItem("Senhas", Icons.Default.Key),
+        NavItem("Scanner", Icons.Default.QrCodeScanner),
+        NavItem("Configurações", Icons.Default.Settings)
     )
 
     val accessList by viewModel.accessItems.collectAsState()
@@ -119,22 +114,15 @@ fun HomeScreen(
                     navItems.forEach { item ->
                         NavigationBarItem(
                             selected = selectedItem == item.route,
-                            onClick = {
-                                selectedItem = item.route
-                                when (item.route) {
-                                    "scanner" -> selectedItem = item.route
-                                    "profile" -> navController.navigate("profile")
-                                    // "home" não navega, já estamos nela
-                                }
-                            },
-                            icon = { Icon(item.icon, contentDescription = item.route) },
-                            label = { Text(item.route.replaceFirstChar { it.uppercase() }) }
+                            onClick = { selectedItem = item.route },
+                            icon = { Icon(item.icon, contentDescription = "") },
+                            label = { Text(item.route) }
                         )
                     }
                 }
             },
             floatingActionButton = {
-                androidx.compose.material3.FloatingActionButton(
+                FloatingActionButton(
                     onClick = { navController.navigate("addAccess") }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Cadastrar Senha")
@@ -142,7 +130,7 @@ fun HomeScreen(
             },
             content = { innerPadding ->
                 when (selectedItem) {
-                    "scanner" -> {
+                    "Scanner" -> {
                         QrCodeScannerScreen(
                             onQrCodeScanned = { qrValue ->
                                 // Você pode salvar, navegar, ou processar o valor aqui.
@@ -151,7 +139,7 @@ fun HomeScreen(
                         )
                     }
 
-                    "home" -> {
+                    "Senhas" -> {
                         if (accessList.isEmpty()) {
                             Box(
                                 modifier = Modifier
@@ -176,16 +164,8 @@ fun HomeScreen(
                         }
                     }
 
-                    "profile" -> {
-                        // Coloque aqui a tela de perfil ou outro conteúdo.
-                        Box(
-                            modifier = Modifier
-                                .padding(innerPadding)
-                                .fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Perfil (em desenvolvimento)")
-                        }
+                    "Configurações" -> {
+                        ConfigScreen()
                     }
                 }
             }
