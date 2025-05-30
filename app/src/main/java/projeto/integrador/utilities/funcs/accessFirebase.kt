@@ -1,8 +1,6 @@
 package projeto.integrador.utilities.funcs
 
-import android.nfc.Tag
 import android.os.Build
-import android.system.Os.access
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
@@ -11,8 +9,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import projeto.integrador.config.generateAccessToken
-import projeto.integrador.config.generateSaltPassword
-import projeto.integrador.config.encryptPassword
 import projeto.integrador.data.model.Access
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
