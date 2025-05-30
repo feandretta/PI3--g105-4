@@ -16,7 +16,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
-import projeto.integrador.config.criptografar
 private const val PERMISSION_REQUEST_CODE = 101
 
 // Função para verificar se a permissão foi concedida
@@ -134,9 +133,6 @@ suspend fun Cadastro(
 
     val auth = Firebase.auth
     val db = Firebase.firestore
-
-    println(criptografar(senha))
-
 
 
     return try {
