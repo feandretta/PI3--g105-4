@@ -51,6 +51,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import projeto.integrador.data.model.Access
 import projeto.integrador.ui.screens.ConfigScreen
+import projeto.integrador.ui.screens.components.AccessCard
 import projeto.integrador.ui.screens.components.QrCodeScannerScreen
 import projeto.integrador.ui.screens.home.HomeViewModel
 import projeto.integrador.utilities.CryptoUtils
@@ -66,14 +67,20 @@ fun HomeScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    var selectedItem by remember { mutableStateOf("Senhas") }
 
+
+    //Itens de navegação da bottom bar
+    data class NavItem(val route: String, val icon: ImageVector)
     val navItems = listOf(
         NavItem("Senhas", Icons.Default.Key),
         NavItem("Scanner", Icons.Default.QrCodeScanner),
         NavItem("Configurações", Icons.Default.Settings)
     )
 
+    //Item atualmente selecionado da bottomBar (Comeca com "Senhas")
+    var selectedItem by remember { mutableStateOf("Senhas") }
+
+    //Lista de Acessos para mostrar os Cards
     val accessList by viewModel.accessItems.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -173,28 +180,5 @@ fun HomeScreen(
     }
 }
 
-@Composable
-fun AccessCard(access: Access) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = access.nome.toString(), style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = access.email.toString(), style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = CryptoUtils.decrypt(access.senha.toString()),
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-    }
-}
-
-data class NavItem(val route: String, val icon: ImageVector)
 
 
