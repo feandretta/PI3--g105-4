@@ -42,28 +42,50 @@ export const performAuth = functions.https.onRequest((req, res) => {
 export const confirmAuth = functions.https.onRequest((req, res) => {
     corsMiddleware(req, res, async () => {
         try {
-            const { loginToken, userUID } = req.body;
+            const { loginToken } = req.body;
 
             const ref = db.collection("login").doc(loginToken);
-            const doc = await ref.get();
+            const docTokenSnap = await ref.get();
 
-            if (!doc.exists) {
+            if (!docTokenSnap.exists) {
                 return res.status(404).json({ error: "Token inválido." });
             }
 
-            await ref.update({
-                status: "authenticated",
-                user: userUID,
-                authenticatedAt: Timestamp.now()
-            });
+            const docToken = docTokenSnap.data();
 
-            return res.status(200).json({ success: true });
+            if (!docToken?.user || !docToken?.siteUrl) {
+                return res.status(400).json({ error: "Dados de login incompletos." });
+            }
+
+            const acessosRef = db
+                .collection("usuarios")
+                .doc(docToken.user)
+                .collection("acessos");
+
+            const acessosSnapshot = await acessosRef
+                .where("dominio", "==", docToken.siteUrl)
+                .limit(1)
+                .get();
+
+            if (acessosSnapshot.empty) {
+                return res.status(404).json({ error: "Acesso não encontrado para este domínio." });
+            }
+
+            const acesso = acessosSnapshot.docs[0].data();
+            const senhaDescriptografada = Buffer.from(acesso.senha, "base64").toString("utf-8");
+
+            return res.status(200).json({
+                success: true,
+                email: acesso.email,
+                password: senhaDescriptografada
+            });
         } catch (err) {
             console.error("Erro ao confirmar login:", err);
             return res.status(500).json({ error: "Erro interno ao confirmar login" });
         }
     });
 });
+
 
 // 🔁 Verificar status do login
 export const getLoginStatus = functions.https.onRequest((req, res) => {
