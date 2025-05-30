@@ -7,7 +7,6 @@ class Access(
     var email: String? = null,
     var senha: String? = null,
     var descricao: String? = null,
-    var salt: String? = null,
     var accessToken: String? = null
 ){
     fun AccessIsEmpty(): Boolean{

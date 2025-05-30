@@ -2,6 +2,7 @@ package projeto.integrador.utilities.funcs
 
 import android.nfc.Tag
 import android.os.Build
+import android.system.Os.access
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
@@ -27,9 +28,7 @@ suspend fun accessRegister(access: Access): Boolean{
         val db = Firebase.firestore
         val uid = auth.currentUser?.uid ?: "uid"
 
-        access.accessToken = generateAccessToken()
-        access.salt = generateSaltPassword()
-        access.senha = encryptPassword(access.salt + access.senha).toString()
+        access.senha = CryptoUtils.encrypt(access.senha.toString())
 
         return try{
             db.collection("usuarios")
@@ -106,7 +105,7 @@ suspend fun alterAccess(idAccess: String, accessAtualizado: Access): Boolean{
     val uid = auth.currentUser?.uid ?: "uid"
 
     accessAtualizado.accessToken = generateAccessToken()
-    accessAtualizado.senha = encryptPassword(accessAtualizado.salt + accessAtualizado.senha).toString()
+    accessAtualizado.senha = CryptoUtils.encrypt(accessAtualizado.senha.toString())
 
     val docRef = db.collection("usuarios").document(uid).collection("acessos").document(idAccess)
 

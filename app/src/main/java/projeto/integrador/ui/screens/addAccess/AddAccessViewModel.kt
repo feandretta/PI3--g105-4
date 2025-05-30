@@ -28,15 +28,14 @@ class AddAccessViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun salvar() {
         viewModelScope.launch {
-            val senhaCriptografada = CryptoUtils.encrypt(senha.toString())
 
             val access = Access(
-                nome = nome.toString(),
-                categoria = categoria.toString(),
-                dominio = url.toString(),
-                email = email.toString(),
-                senha = senhaCriptografada,
-                descricao = descricao.toString()
+                nome = nome.value.toString(),
+                categoria = categoria.value.toString(),
+                dominio = url.value.toString(),
+                email = email.value.toString(),
+                senha = senha.value.toString(),
+                descricao = descricao.value.toString()
             )
             val result = accessRegister(access)
 
