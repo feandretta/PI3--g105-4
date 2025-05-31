@@ -35,6 +35,7 @@ import com.google.firebase.auth.auth
 // Componentes locais
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -42,44 +43,41 @@ import com.google.firebase.Firebase
 
 @Composable
 fun ConfigScreen(
-    modifier: Modifier = Modifier.fillMaxSize().systemBarsPadding(),
+    padding: PaddingValues
 ) {
-
-    // Contexto atual da aplicação
     val context = LocalContext.current
 
-    // Estados para as configurações do usuário
     var darkMode by remember { mutableStateOf(false) }
     var notificationsEnabled by remember { mutableStateOf(true) }
-    var biometricEnabled by remember { mutableStateOf(false) }
-    var language by remember { mutableStateOf("Português") }
 
     val auth = Firebase.auth
 
-
-    Scaffold(
-        modifier = modifier
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        item {
             Text(
                 text = "Configurações",
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
+        }
 
+        item {
             Text(
                 text = "Aparência",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
+        }
+
+        item {
             ConfigCard(
                 icon = Icons.Filled.DarkMode,
                 title = "Tema Escuro",
@@ -91,12 +89,17 @@ fun ConfigScreen(
                     )
                 }
             )
+        }
 
+        item {
             Text(
                 text = "Segurança",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
+        }
+
+        item {
             ConfigCard(
                 icon = Icons.Filled.Lock,
                 title = "Alterar Senha",
@@ -113,18 +116,23 @@ fun ConfigScreen(
                 },
                 trailingContent = {
                     Icon(
-                        imageVector = Icons.Filled.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             )
+        }
 
+        item {
             Text(
                 text = "Notificações",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
+        }
+
+        item {
             ConfigCard(
                 icon = Icons.Filled.Notifications,
                 title = "Notificações Push",
@@ -136,17 +144,25 @@ fun ConfigScreen(
                     )
                 }
             )
+        }
 
+        item {
             Text(
                 text = "Sobre",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
+        }
+
+        item {
             ConfigCard(
                 icon = Icons.Filled.Info,
                 title = "Versão",
                 description = "1.0.0"
             )
+        }
+
+        item {
             ConfigCard(
                 icon = Icons.Filled.Description,
                 title = "Termos de Uso",
@@ -156,19 +172,21 @@ fun ConfigScreen(
                 },
                 trailingContent = {
                     Icon(
-                        imageVector = Icons.Filled.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             )
+        }
+
+        item {
             ConfigCard(
                 icon = Icons.Filled.Description,
                 title = "Política de Privacidade",
                 description = "Como tratamos seus dados",
                 onClick = {
-                    Toast.makeText(context, "Política de Privacidade em breve", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(context, "Política de Privacidade em breve", Toast.LENGTH_SHORT).show()
                 },
                 trailingContent = {
                     Icon(
@@ -181,3 +199,4 @@ fun ConfigScreen(
         }
     }
 }
+

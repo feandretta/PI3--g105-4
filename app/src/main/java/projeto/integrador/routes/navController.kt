@@ -81,11 +81,6 @@ fun NavigationSetup(navController: NavHostController) {
             CategoriasScreen(navController = navController)
         }
 
-        composable("settings"){
-            ConfigScreen()
-
-        }
-
         composable("addAccess"){
             AddAccessScreen(
                 modifier = Modifier,
