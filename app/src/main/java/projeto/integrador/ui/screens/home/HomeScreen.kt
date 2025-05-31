@@ -137,12 +137,7 @@ fun HomeScreen(
             content = { innerPadding ->
                 when (selectedItem) {
                     "Scanner" -> {
-                        QrCodeScannerScreen(
-                            onQrCodeScanned = { qrValue ->
-                                // Você pode salvar, navegar, ou processar o valor aqui.
-                                println("QR Code lido: $qrValue")
-                            }
-                        )
+                        QrCodeScannerScreen()
                     }
 
                     "Senhas" -> {

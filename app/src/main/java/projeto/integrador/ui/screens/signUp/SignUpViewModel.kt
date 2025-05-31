@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import projeto.integrador.data.model.User
-import projeto.integrador.utilities.Cadastro
+import projeto.integrador.utilities.cadastro
 
 class SignUpViewModel : ViewModel() {
     val nomeState = TextFieldState()
@@ -39,7 +39,7 @@ class SignUpViewModel : ViewModel() {
                                      senhaState.text.toString())
 
             CoroutineScope(Dispatchers.IO).launch {
-                val resultado = Cadastro(context, usuario)
+                val resultado = cadastro(context, usuario)
                 val mensagem = if (resultado) {
                     "Cadastro realizado com sucesso!"
                 } else {

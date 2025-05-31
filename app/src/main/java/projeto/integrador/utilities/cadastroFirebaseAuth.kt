@@ -64,7 +64,7 @@ private suspend fun createDefaultCategories(userId: String) {
  * @return Boolean indicando se o cadastro foi bem-sucedido
  */
 @RequiresPermission("android.permission.READ_PHONE_STATE")
-suspend fun Cadastro(
+suspend fun cadastro(
     context: Context,
     usuario: User
 ): Boolean {

@@ -7,7 +7,6 @@ import androidx.camera.view.PreviewView
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -20,22 +19,28 @@ import java.util.concurrent.Executors
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import projeto.integrador.utilities.loginQrCode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
-fun QrCodeScannerScreen(
-    onQrCodeScanned: (String) -> Unit
-) {
+fun QrCodeScannerScreen() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
+
+    var scanned by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         val cameraProvider = ProcessCameraProvider.getInstance(context).get()
@@ -56,15 +61,15 @@ fun QrCodeScannerScreen(
 
         analysis.setAnalyzer(cameraExecutor) { imageProxy ->
             val mediaImage = imageProxy.image
-            if (mediaImage != null) {
+            if (mediaImage != null && !scanned) {
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
                 scanner.process(image)
                     .addOnSuccessListener { barcodes ->
-                        barcodes.firstOrNull()?.rawValue?.let {
-                            onQrCodeScanned(it)
-                            loginQrCode(it) { success, exception ->
-                                Log.d("login Qr Code", success.toString())
-                                exception?.let { Log.d("login Qr Code", it.toString()) }
+                        barcodes.firstOrNull()?.rawValue?.let { rawValue ->
+                            scanned = true
+                            loginQrCode(rawValue) { message ->
+                                dialogMessage = message
+                                showDialog = true
                             }
                         }
                     }
@@ -93,6 +98,23 @@ fun QrCodeScannerScreen(
                 .size(250.dp)
                 .border(2.dp, Color.White, shape = RoundedCornerShape(8.dp))
         )
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { },
+                title = { Text("QR Code") },
+                text = { Text(dialogMessage) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDialog = false
+                        scanned = false
+                    }) {
+                        Text("Ler outro")
+                    }
+                }
+            )
+        }
     }
 }
+
 
