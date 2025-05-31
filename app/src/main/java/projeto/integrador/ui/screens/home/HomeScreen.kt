@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
@@ -105,12 +106,12 @@ fun HomeScreen(
                     title = { Text("Super ID") },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
+                            Icon(Icons.Default.Menu, contentDescription = null)
                         }
                     },
                     actions = {
                         IconButton(onClick = { navController.navigate("settings") }) {
-                            Icon(Icons.Default.Settings, contentDescription = "Configurações")
+                            Icon(Icons.Default.Person, contentDescription = null)
                         }
                     }
                 )
@@ -121,56 +122,66 @@ fun HomeScreen(
                         NavigationBarItem(
                             selected = selectedItem == item.route,
                             onClick = { selectedItem = item.route },
-                            icon = { Icon(item.icon, contentDescription = "") },
+                            icon = { Icon(item.icon, contentDescription = null) },
                             label = { Text(item.route) }
                         )
                     }
                 }
             },
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { navController.navigate("addAccess") }
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Cadastrar Senha")
+                when (selectedItem) {
+
+                    "Senhas" -> {
+                        FloatingActionButton(
+                            onClick = { navController.navigate("addAccess") }
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = null)
+                        }
+                    }
                 }
+
             },
             content = { innerPadding ->
                 when (selectedItem) {
-                    "Scanner" -> {
-                        QrCodeScannerScreen()
-                    }
 
-                    "Senhas" -> {
-                        if (accessList.isEmpty()) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(innerPadding)
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Nenhum acesso cadastrado.")
-                            }
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .padding(innerPadding)
-                                    .fillMaxSize(),
-                                contentPadding = PaddingValues(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                items(accessList) { access ->
-                                    AccessCard(access = access)
-                                }
-                            }
-                        }
-                    }
+                    "Scanner" -> { QrCodeScannerScreen(innerPadding) }
 
-                    "Configurações" -> {
-                        ConfigScreen()
-                    }
+                    "Senhas" -> { AccessListContent(accessList = accessList, innerPadding) }
+
+                    "Configurações" -> { ConfigScreen(innerPadding) }
+
                 }
             }
         )
+    }
+}
+
+@Composable
+fun AccessListContent(
+    accessList: List<Access>,
+    padding: PaddingValues
+) {
+    if (accessList.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Nenhum acesso cadastrado.")
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(accessList) { access ->
+                AccessCard(access = access)
+            }
+        }
     }
 }
 

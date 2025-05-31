@@ -1,5 +1,6 @@
 package projeto.integrador.utilities
 
+import android.system.Os.access
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -14,37 +15,34 @@ import kotlin.coroutines.suspendCoroutine
 
 //essas chamadas de db e auth são horrorosas dps vou criar um função de repositorio pra isso
 //função para cadastrar as senhas
-suspend fun accessRegister(access: Access): Boolean{
+suspend fun registerAccess(access: Access): String{
     //ele não irá retornar caso a SENHA, CATEGORIA ou NOME sejam vazios os demais campos são opcionais
-    if(!access.isEmpty()){
-        val auth = Firebase.auth
-        val db = Firebase.firestore
-        val uid = auth.currentUser?.uid ?: "uid"
 
-        access.senha = CryptoManager.encrypt(access.senha.toString())
+    val auth = Firebase.auth
+    val db = Firebase.firestore
+    val uid = auth.currentUser?.uid ?: "uid"
 
-        return try{
-            db.collection("usuarios")
-                .document(uid)
-                .collection("acessos")
-                .add(access).await()
+    access.senha = CryptoManager.encrypt(access.senha.toString())
 
-            true
-        }catch (e: Exception) {
+    return try{
+        db.collection("usuarios")
+            .document(uid)
+            .collection("acessos")
+            .add(access).await()
 
-            e.printStackTrace()
+        "Acesso Cadastrado com sucesso"
+    }catch (e: Exception) {
 
-            Log.e("Registro Acesso", "Erro ao registrar acesso", e)
+        e.printStackTrace()
 
-            false
-        }
+        Log.e("Registro Acesso", "Erro ao registrar acesso", e)
 
+        "Erro ao registrar acesso"
     }
-    return false
 }
 //retorna todos os acessos do usuário como uma lista de objetos do tipo documentSnapshot
 //DOCUMENT SNAPSHOT cotem o .ID do documento no firebase e .getData() pras informações de fato
-suspend fun getAccessByUser(): List<DocumentSnapshot> {
+suspend fun getAllAccess(): List<DocumentSnapshot> {
     val auth = Firebase.auth
     val db = Firebase.firestore
     val uid = auth.currentUser?.uid ?: "uid"

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import projeto.integrador.data.model.Access
-import projeto.integrador.utilities.getAccessByUser
+import projeto.integrador.utilities.getAllAccess
 
 class HomeViewModel : ViewModel() {
 
@@ -21,7 +21,7 @@ class HomeViewModel : ViewModel() {
 
     fun loadAccessItems() {
         viewModelScope.launch(handler) {
-            val snapshots: List<DocumentSnapshot> = getAccessByUser()
+            val snapshots: List<DocumentSnapshot> = getAllAccess()
             val items = snapshots.mapNotNull { doc ->
                 try {
                     doc.toObject(Access::class.java)

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import projeto.integrador.ui.screens.addAccess.AddAccessViewModel
+import projeto.integrador.ui.screens.components.RequiredTextField
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,6 +69,8 @@ fun AddAccessScreen(
                 label = "Nome",
                 modifier = Modifier.fillMaxWidth()
             )
+
+            //menu dropdown no formato do texfield mostrando as categoriass
 
             RequiredTextField(
                 value = viewModel.url.value,
@@ -109,21 +112,4 @@ fun AddAccessScreen(
             }
         }
     }
-}
-
-@Composable
-fun RequiredTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        supportingText = { Text("Campo obrigatório") },
-        singleLine = true,
-        modifier = modifier
-    )
 }

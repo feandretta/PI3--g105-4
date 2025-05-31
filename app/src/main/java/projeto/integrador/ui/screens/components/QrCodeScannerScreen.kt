@@ -15,8 +15,10 @@ import com.google.mlkit.vision.common.InputImage
 import androidx.camera.core.*
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import java.util.concurrent.Executors
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -32,7 +34,9 @@ import projeto.integrador.utilities.loginQrCode
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnsafeOptInUsageError")
 @Composable
-fun QrCodeScannerScreen() {
+fun QrCodeScannerScreen(
+    padding: PaddingValues
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
@@ -86,7 +90,7 @@ fun QrCodeScannerScreen() {
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, analysis)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.padding(padding).fillMaxSize()) {
         AndroidView(
             factory = { previewView },
             modifier = Modifier.fillMaxSize()

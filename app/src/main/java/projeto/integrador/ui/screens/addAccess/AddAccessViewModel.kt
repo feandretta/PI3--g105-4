@@ -7,8 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import projeto.integrador.config.generateAccessToken
 import projeto.integrador.data.model.Access
-import projeto.integrador.utilities.accessRegister
+import projeto.integrador.utilities.registerAccess
 
 class AddAccessViewModel : ViewModel() {
     val nome = mutableStateOf("")
@@ -17,6 +18,7 @@ class AddAccessViewModel : ViewModel() {
     val senha = mutableStateOf("")
     val descricao = mutableStateOf("")
     val categoria = mutableStateOf("Selecionar Categoria")
+    val result = mutableStateOf("")
 
     fun onCategoriaSelecionada(novaCategoria: String) {
         categoria.value = novaCategoria
@@ -32,11 +34,10 @@ class AddAccessViewModel : ViewModel() {
                 dominio = url.value.toString(),
                 email = email.value.toString(),
                 senha = senha.value.toString(),
-                descricao = descricao.value.toString()
+                descricao = descricao.value.toString(),
+                accessToken = generateAccessToken()
             )
-            val result = accessRegister(access)
-
-            Log.d("TesteCadastro", if (result) "Cadastro realizado!" else "Erro ao cadastrar.")
+            val result = registerAccess(access)
         }
     }
 
