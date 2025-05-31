@@ -23,7 +23,7 @@ import androidx.navigation.NavHostController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import projeto.integrador.R
-import projeto.integrador.utilities.funcs.signOut
+import projeto.integrador.utilities.signOut
 
 @Composable
 fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {

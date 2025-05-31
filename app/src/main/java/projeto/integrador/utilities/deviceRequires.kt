@@ -1,4 +1,4 @@
-package projeto.integrador.utilities.funcs
+package projeto.integrador.utilities
 
 import android.Manifest
 import android.annotation.SuppressLint

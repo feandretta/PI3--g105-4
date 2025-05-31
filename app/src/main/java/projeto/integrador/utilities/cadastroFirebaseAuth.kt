@@ -88,7 +88,7 @@ suspend fun Cadastro(
             .await()
 
         // Cria as categorias pré-definidas para o novo usuário
-        createDefaultCategories(uid)
+        createDefaultCategories(usuario.uid.toString())
 
         true
     } catch (e: Exception) {

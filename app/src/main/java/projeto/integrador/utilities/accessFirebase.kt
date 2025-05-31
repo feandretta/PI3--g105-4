@@ -1,4 +1,4 @@
-package projeto.integrador.utilities.funcs
+package projeto.integrador.utilities
 
 import android.util.Log
 import com.google.firebase.Firebase
@@ -21,7 +21,7 @@ suspend fun accessRegister(access: Access): Boolean{
         val db = Firebase.firestore
         val uid = auth.currentUser?.uid ?: "uid"
 
-        access.senha = CryptoUtils.encrypt(access.senha.toString())
+        access.senha = CryptoManager.encrypt(access.senha.toString())
 
         return try{
             db.collection("usuarios")
@@ -97,7 +97,7 @@ suspend fun alterAccess(idAccess: String, accessAtualizado: Access): Boolean{
     val uid = auth.currentUser?.uid ?: "uid"
 
     accessAtualizado.accessToken = generateAccessToken()
-    accessAtualizado.senha = CryptoUtils.encrypt(accessAtualizado.senha.toString())
+    accessAtualizado.senha = CryptoManager.encrypt(accessAtualizado.senha.toString())
 
     val docRef = db.collection("usuarios").document(uid).collection("acessos").document(idAccess)
 
