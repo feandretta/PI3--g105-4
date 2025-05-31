@@ -1,15 +1,14 @@
+package projeto.integrador.ui.screens.home
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -19,8 +18,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -50,11 +47,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import projeto.integrador.data.model.Access
 import projeto.integrador.ui.screens.ConfigScreen
+import projeto.integrador.ui.screens.accessManipulation.AccessDialog
+import projeto.integrador.ui.screens.accessManipulation.AccessDialogMode
+import projeto.integrador.ui.screens.accessManipulation.AccessDialogViewModel
 import projeto.integrador.ui.screens.components.AccessCard
 import projeto.integrador.ui.screens.components.QrCodeScannerScreen
-import projeto.integrador.ui.screens.home.HomeViewModel
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,25 +64,35 @@ fun HomeScreen(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    var selectedBottomBarItem by remember { mutableStateOf("Senhas") }
 
+    // Estados para o diálogo de acesso
+    val accessDialogViewModel: AccessDialogViewModel = viewModel()
+    var showAccessDialog by remember { mutableStateOf(false) }
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var accessIdToDelete by remember { mutableStateOf<String?>(null) }
 
-    //Itens de navegação da bottom bar
-    data class NavItem(val route: String, val icon: ImageVector)
-    val navItems = listOf(
-        NavItem("Senhas", Icons.Default.Key),
-        NavItem("Scanner", Icons.Default.QrCodeScanner),
-        NavItem("Configurações", Icons.Default.Settings)
-    )
-
-    //Item atualmente selecionado da bottomBar (Comeca com "Senhas")
-    var selectedItem by remember { mutableStateOf("Senhas") }
-
-    //Lista de Acessos para mostrar os Cards
     val accessList by viewModel.accessItems.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadAccessItems()
+    }
+
+    if (showAccessDialog) {
+        AccessDialog(
+            mode = accessDialogViewModel.mode.value,
+            accessId = accessDialogViewModel.accessId ?: "",
+            onDismiss = {
+                showAccessDialog = false
+                viewModel.loadAccessItems()
+            },
+            onSaveComplete = {
+                showAccessDialog = false
+                viewModel.loadAccessItems()
+            },
+            viewModel = accessDialogViewModel
+        )
     }
 
     ModalNavigationDrawer(
@@ -118,10 +126,14 @@ fun HomeScreen(
             },
             bottomBar = {
                 NavigationBar {
-                    navItems.forEach { item ->
+                    listOf(
+                        NavItem("Senhas", Icons.Default.Key),
+                        NavItem("Scanner", Icons.Default.QrCodeScanner),
+                        NavItem("Configurações", Icons.Default.Settings)
+                    ).forEach { item ->
                         NavigationBarItem(
-                            selected = selectedItem == item.route,
-                            onClick = { selectedItem = item.route },
+                            selected = selectedBottomBarItem == item.route,
+                            onClick = { selectedBottomBarItem = item.route },
                             icon = { Icon(item.icon, contentDescription = null) },
                             label = { Text(item.route) }
                         )
@@ -129,37 +141,64 @@ fun HomeScreen(
                 }
             },
             floatingActionButton = {
-                when (selectedItem) {
-
-                    "Senhas" -> {
-                        FloatingActionButton(
-                            onClick = { navController.navigate("addAccess") }
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = null)
+                if (selectedBottomBarItem == "Senhas") {
+                    FloatingActionButton(
+                        onClick = {
+                            accessDialogViewModel.mode.value = AccessDialogMode.CREATE
+                            accessDialogViewModel.accessId = null
+                            accessDialogViewModel.loadAccessData(
+                                access = projeto.integrador.data.model.Access(),
+                                id = null,
+                                mode = AccessDialogMode.CREATE
+                            )
+                            showAccessDialog = true
                         }
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null)
                     }
                 }
-
             },
             content = { innerPadding ->
-                when (selectedItem) {
+                when (selectedBottomBarItem) {
 
-                    "Scanner" -> { QrCodeScannerScreen(innerPadding) }
+                    "Senhas" -> {
+                        AccessListContent(
+                            accessList = accessList,
+                            padding = innerPadding,
+                            onView = { id ->
+                                accessDialogViewModel.loadAccessById(id, AccessDialogMode.VIEW)
+                                showAccessDialog = true
+                            },
+                            onEdit = { id ->
+                                accessDialogViewModel.loadAccessById(id, AccessDialogMode.EDIT)
+                                showAccessDialog = true
+                            },
+                            onDelete = { id ->
+                                accessIdToDelete = id
+                            }
+                        )
+                    }
 
-                    "Senhas" -> { AccessListContent(accessList = accessList, innerPadding) }
+                    "Scanner" -> QrCodeScannerScreen(innerPadding)
 
-                    "Configurações" -> { ConfigScreen(innerPadding) }
-
+                    "Configurações" -> ConfigScreen(innerPadding)
                 }
             }
         )
     }
 }
 
+
+private data class NavItem(val route: String, val icon: ImageVector)
+
+
 @Composable
 fun AccessListContent(
-    accessList: List<Access>,
-    padding: PaddingValues
+    accessList: List<AccessWithId>,
+    padding: PaddingValues,
+    onView: (String) -> Unit,
+    onEdit: (String) -> Unit,
+    onDelete: (String) -> Unit
 ) {
     if (accessList.isEmpty()) {
         Box(
@@ -178,12 +217,15 @@ fun AccessListContent(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(accessList) { access ->
-                AccessCard(access = access)
+            items(accessList) { accessWithId ->
+                AccessCard(
+                    access = accessWithId.access,
+                    accessId = accessWithId.id,
+                    onView = onView,
+                    onEdit = onEdit,
+                    onDelete = onDelete
+                )
             }
         }
     }
 }
-
-
-

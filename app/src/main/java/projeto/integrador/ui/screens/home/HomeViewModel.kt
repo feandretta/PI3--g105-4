@@ -8,12 +8,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import projeto.integrador.data.model.Access
+import projeto.integrador.utilities.deleteAccess
 import projeto.integrador.utilities.getAllAccess
+
+data class AccessWithId(
+    val id: String,
+    val access: Access
+)
 
 class HomeViewModel : ViewModel() {
 
-    private val _accessItems = MutableStateFlow<List<Access>>(emptyList())
-    val accessItems: StateFlow<List<Access>> = _accessItems
+    private val _accessItems = MutableStateFlow<List<AccessWithId>>(emptyList())
+    val accessItems: StateFlow<List<AccessWithId>> = _accessItems
 
     private val handler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
@@ -24,7 +30,10 @@ class HomeViewModel : ViewModel() {
             val snapshots: List<DocumentSnapshot> = getAllAccess()
             val items = snapshots.mapNotNull { doc ->
                 try {
-                    doc.toObject(Access::class.java)
+                    val access = doc.toObject(Access::class.java)
+                    if (access != null) {
+                        AccessWithId(doc.id, access)
+                    } else null
                 } catch (e: Exception) {
                     e.printStackTrace()
                     null
@@ -33,4 +42,19 @@ class HomeViewModel : ViewModel() {
             _accessItems.value = items
         }
     }
+
+    fun deleteAccessById(id: String, onComplete: () -> Unit, onError: (Throwable) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val success = deleteAccess(id)
+                if (success) {
+                    loadAccessItems()
+                    onComplete()
+                }
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+    }
+
 }
