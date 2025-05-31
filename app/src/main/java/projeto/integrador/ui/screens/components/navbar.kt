@@ -23,12 +23,12 @@ import androidx.navigation.NavHostController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import projeto.integrador.R
+import projeto.integrador.utilities.funcs.signOut
 
 @Composable
 fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {
     var settingsMenuExpanded by remember { mutableStateOf(false) }
     var addMenuExpanded by remember { mutableStateOf(false) }
-    val auth = Firebase.auth
 
     Column(
         modifier = Modifier
@@ -92,7 +92,8 @@ fun NavBar(navController: NavHostController, modifier: Modifier = Modifier) {
                         },
                         onClick = {
                             settingsMenuExpanded = false
-                            auth.signOut()
+                            //função só pra tirar uma chamada do firebase de uma view/componente
+                            signOut()
                             navController.navigate("signIn")
                         }
                     )
