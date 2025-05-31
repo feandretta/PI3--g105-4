@@ -10,6 +10,7 @@ fun RequiredTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(

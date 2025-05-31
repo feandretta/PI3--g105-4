@@ -1,6 +1,6 @@
 package projeto.integrador.data.model
 
-class User(
+data class User(
     var nome: String? = null,
     var email: String? = null,
     var senha: String? = null,

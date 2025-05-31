@@ -1,6 +1,5 @@
 package projeto.integrador.utilities
 
-import android.system.Os.access
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -68,26 +67,16 @@ suspend fun getAllAccess(): List<DocumentSnapshot> {
 }
 //mesma coisa que um get normal mas esse você passa o id do acesso específico que você quer retornar
 // EM STRING PEDRÃO
-fun getAccessByUser(idAccess : String){
+
+suspend fun getAccessByUser(idAccess: String): DocumentSnapshot {
     val auth = Firebase.auth
     val db = Firebase.firestore
     val uid = auth.currentUser?.uid ?: "uid"
 
-
-    val docRef = db.collection("usuarios").document(uid).collection("accessos").document(idAccess)
-    docRef.get()
-        .addOnSuccessListener { document ->
-            if (document != null) {
-                Log.d("Get Access", "DocumentSnapshot data: ${document.data}")
-
-            } else {
-                Log.d("Get Access", "No such document")
-            }
-        }
-        .addOnFailureListener { exception ->
-            Log.d("Get Access", "get failed with ", exception)
-        }
+    val docRef = db.collection("usuarios").document(uid).collection("acessos").document(idAccess)
+    return docRef.get().await()
 }
+
 //passa o id e o acesso novo que ele edita
 suspend fun alterAccess(idAccess: String, accessAtualizado: Access): Boolean{
     val auth = Firebase.auth
