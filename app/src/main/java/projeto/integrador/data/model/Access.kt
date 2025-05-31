@@ -9,8 +9,8 @@ class Access(
     var descricao: String? = null,
     var accessToken: String? = null
 ){
-    fun AccessIsEmpty(): Boolean{
-        if (senha?.isEmpty() == true || categoria?.isEmpty() == true || nome?.isEmpty() == true) return true
+    fun isEmpty(): Boolean{
+        return senha?.isEmpty() == true || categoria?.isEmpty() == true || nome?.isEmpty() == true
         return false
     }
 }

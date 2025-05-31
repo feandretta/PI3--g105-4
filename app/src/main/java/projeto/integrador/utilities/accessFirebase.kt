@@ -1,8 +1,6 @@
-package projeto.integrador.utilities
+package projeto.integrador.utilities.funcs
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -10,22 +8,20 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import projeto.integrador.config.generateAccessToken
 import projeto.integrador.data.model.Access
-import projeto.integrador.utilities.CryptoManager
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 //essas chamadas de db e auth são horrorosas dps vou criar um função de repositorio pra isso
 //função para cadastrar as senhas
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 suspend fun accessRegister(access: Access): Boolean{
     //ele não irá retornar caso a SENHA, CATEGORIA ou NOME sejam vazios os demais campos são opcionais
-    if(!access.AccessIsEmpty()){
+    if(!access.isEmpty()){
         val auth = Firebase.auth
         val db = Firebase.firestore
         val uid = auth.currentUser?.uid ?: "uid"
 
-        access.senha = CryptoManager.encrypt(access.senha.toString())
+        access.senha = CryptoUtils.encrypt(access.senha.toString())
 
         return try{
             db.collection("usuarios")
@@ -95,15 +91,13 @@ fun getAccessByUser(idAccess : String){
         }
 }
 //passa o id e o acesso novo que ele edita
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 suspend fun alterAccess(idAccess: String, accessAtualizado: Access): Boolean{
     val auth = Firebase.auth
     val db = Firebase.firestore
     val uid = auth.currentUser?.uid ?: "uid"
 
-
     accessAtualizado.accessToken = generateAccessToken()
-    accessAtualizado.senha = CryptoManager.encrypt(accessAtualizado.senha.toString())
+    accessAtualizado.senha = CryptoUtils.encrypt(accessAtualizado.senha.toString())
 
     val docRef = db.collection("usuarios").document(uid).collection("acessos").document(idAccess)
 
