@@ -35,17 +35,18 @@ fun OnboardingScreen(navController: NavHostController, sharedPreferences: Shared
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background) // Fundo da tela
     ) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .systemBarsPadding()
+                .systemBarsPadding() // Respeita as barras do sistema
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 })
+            val pagerState = rememberPagerState(initialPage = 0, pageCount = { 4 }) // Estado da página
 
             Column(modifier = Modifier.fillMaxSize()) {
+                // Pager com as telas de boas-vindas
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier
@@ -55,32 +56,30 @@ fun OnboardingScreen(navController: NavHostController, sharedPreferences: Shared
                     when (page) {
                         0 -> OnboardingPage(
                             title = "SuperID: Um novo jeito de fazer login",
-                            description = "Evite memorizar dezenas de senhas. Com o SuperID, você centraliza seus acessos em um único lugar seguro.",
+                            description = "Evite memorizar dezenas de senhas...",
                             highlight = "Conecte-se com praticidade e segurança.",
                             imageResId = R.drawable.manwithphone
                         )
-
                         1 -> OnboardingPage(
                             title = "Login com QR Code, sem digitar senha",
-                            description = "Acesse sites parceiros apenas escaneando um QR Code. É rápido, seguro e sem digitação de senhas.",
+                            description = "Acesse sites parceiros apenas escaneando...",
                             highlight = "A tecnologia do SuperID faz o login por você.",
                             imageResId = R.drawable.phonewithqrcode
                         )
-
                         2 -> OnboardingPage(
                             title = "Gerencie suas senhas com segurança total",
-                            description = "Armazene senhas de sites, apps e até teclados físicos. Todas criptografadas e protegidas por uma única Senha Mestre.",
+                            description = "Armazene senhas de sites, apps e até teclados...",
                             highlight = "Suas credenciais organizadas e protegidas.",
                             imageResId = R.drawable.vault
                         )
-
-                        3 -> TermsOfUsePage(
+                        3 -> TermsOfUsePage( // Última página: termos de uso
                             navController = navController,
                             sharedPreferences = sharedPreferences
                         )
                     }
                 }
 
+                // Indicadores de página (bolinhas)
                 PagerIndicator(
                     pageCount = 4,
                     currentPageIndex = pagerState.currentPage,
@@ -108,17 +107,19 @@ fun OnboardingPage(title: String, description: String, highlight: String, @Drawa
         Text(text = description, style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(48.dp))
         Text(text = highlight, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+
+        // Ilustração da página
         Image(
-                painter = painterResource(id = imageResId),
-        contentDescription = null,
-        modifier = Modifier.size(300.dp)
+            painter = painterResource(id = imageResId),
+            contentDescription = null,
+            modifier = Modifier.size(300.dp)
         )
     }
 }
 
-
 @Composable
 fun PagerIndicator(pageCount: Int, currentPageIndex: Int, modifier: Modifier = Modifier) {
+    // Linha com os indicadores de página
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center
@@ -138,13 +139,14 @@ fun PagerIndicator(pageCount: Int, currentPageIndex: Int, modifier: Modifier = M
 
 @Composable
 fun TermsOfUsePage(navController: NavHostController, sharedPreferences: SharedPreferences) {
-    var accepted by remember { mutableStateOf(false) }
+    var accepted by remember { mutableStateOf(false) } // Estado do checkbox
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp)
     ) {
+        // Título
         Text(
             text = "Termos de Uso",
             style = MaterialTheme.typography.headlineLarge,
@@ -153,6 +155,7 @@ fun TermsOfUsePage(navController: NavHostController, sharedPreferences: SharedPr
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Caixa de texto com os termos
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -169,6 +172,7 @@ fun TermsOfUsePage(navController: NavHostController, sharedPreferences: SharedPr
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Checkbox de aceitação dos termos
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = accepted, onCheckedChange = { accepted = it })
             Spacer(modifier = Modifier.width(8.dp))
@@ -177,12 +181,13 @@ fun TermsOfUsePage(navController: NavHostController, sharedPreferences: SharedPr
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Botão de continuar (só habilitado se os termos forem aceitos)
         Button(
             onClick = {
                 sharedPreferences.edit(commit = true) {
-                    putBoolean("isFirstTime", false)
+                    putBoolean("isFirstTime", false) // Marca que o onboarding já foi visto
                 }
-                navController.navigate("signUp")
+                navController.navigate("signUp") // Vai para tela de cadastro
             },
             shape = RoundedCornerShape(12.dp),
             enabled = accepted,

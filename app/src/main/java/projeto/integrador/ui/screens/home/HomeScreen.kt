@@ -65,27 +65,27 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = viewModel()
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-    var selectedBottomBarItem by remember { mutableStateOf("Senhas") }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) // Estado do menu lateral
+    val scope = rememberCoroutineScope() // Escopo para abrir/fechar o drawer
+    var selectedBottomBarItem by remember { mutableStateOf("Senhas") } // Aba inferior selecionada
 
-    // Estados para o diálogo de acesso
-    val accessDialogViewModel: AccessDialogViewModel = viewModel()
-    var showAccessDialog by remember { mutableStateOf(false) }
+    val accessDialogViewModel: AccessDialogViewModel = viewModel() // ViewModel do diálogo de acesso
+    var showAccessDialog by remember { mutableStateOf(false) } // Controle de exibição do diálogo de acesso
+    var showDeleteDialog by remember { mutableStateOf(false) } // Controle do alerta de exclusão
+    var accessIdToDelete by remember { mutableStateOf<String?>(null) } // ID do acesso a ser deletado
 
-    var showDeleteDialog by remember { mutableStateOf(false) }
-    var accessIdToDelete by remember { mutableStateOf<String?>(null) }
+    var selectedCategory by remember { mutableStateOf<String?>(null) } // Categoria selecionada para filtro
 
-    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    val accessList by viewModel.accessItems.collectAsState() // Lista de acessos observável
+    val categoryList by viewModel.categoryNames // Lista de categorias
 
-    val accessList by viewModel.accessItems.collectAsState()
-    val categoryList by viewModel.categoryNames
-
+    // Carrega os dados ao iniciar
     LaunchedEffect(Unit) {
         viewModel.loadAccessItems()
         viewModel.loadCategoryNames()
     }
 
+    // Diálogo de criar/editar/visualizar acesso
     if (showAccessDialog) {
         AccessDialog(
             onDismiss = {
@@ -101,6 +101,7 @@ fun HomeScreen(
         )
     }
 
+    // Alerta de confirmação de exclusão
     if (showDeleteDialog && accessIdToDelete != null) {
         AlertDialog(
             onDismissRequest = {
@@ -119,10 +120,9 @@ fun HomeScreen(
                                 onComplete = {
                                     showDeleteDialog = false
                                     accessIdToDelete = null
-                                    viewModel.loadAccessItems() // Atualiza categorias após exclusão
+                                    viewModel.loadAccessItems()
                                 },
                                 onError = {
-                                    // Aqui você pode mostrar um Snackbar ou Toast futuramente
                                     showDeleteDialog = false
                                     accessIdToDelete = null
                                 }
@@ -146,19 +146,18 @@ fun HomeScreen(
         )
     }
 
+    // Menu lateral (Drawer) para filtro por categoria
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
                 Spacer(modifier = Modifier.height(48.dp))
-
                 Text(
                     text = "Filtrar por Categoria",
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
-
-                // Opção "Todas" para mostrar sem filtro
+                // Categoria: Todas
                 Text(
                     text = "Todas",
                     modifier = Modifier
@@ -173,8 +172,7 @@ fun HomeScreen(
                         MaterialTheme.typography.bodyLarge
                     }
                 )
-
-                // Lista de categorias vindas do ViewModel
+                // Lista de categorias dinâmicas
                 LazyColumn(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
@@ -198,6 +196,7 @@ fun HomeScreen(
             }
         }
     ) {
+        // Estrutura da tela principal
         Scaffold(
             topBar = {
                 HomeTopAppBar(
@@ -231,9 +230,8 @@ fun HomeScreen(
             },
             content = { innerPadding ->
                 when (selectedBottomBarItem) {
-
                     "Senhas" -> {
-
+                        // Filtra os acessos pela categoria selecionada
                         val filteredList = selectedCategory?.let { cat ->
                             accessList.filter { it.access.categoria == cat }
                         } ?: accessList
@@ -255,20 +253,18 @@ fun HomeScreen(
                             }
                         )
                     }
-
-                    "Scanner" -> QrCodeScannerScreen(innerPadding)
-
-                    "Configurações" -> ConfigScreen(innerPadding,navController)
+                    "Scanner" -> QrCodeScannerScreen(innerPadding) // Tela de QR Code
+                    "Configurações" -> ConfigScreen(innerPadding, navController) // Tela de configurações
                 }
             }
         )
     }
 }
 
-
+// Representa um item de navegação inferior
 private data class NavItem(val route: String, val icon: ImageVector)
 
-
+// Lista de acessos ou mensagem "vazio"
 @Composable
 fun AccessListContent(
     accessList: List<AccessWithId>,
@@ -307,6 +303,7 @@ fun AccessListContent(
     }
 }
 
+// Barra de navegação inferior
 @Composable
 private fun HomeBottomBar(
     selectedItem: String,
@@ -330,6 +327,7 @@ private fun HomeBottomBar(
     }
 }
 
+// Barra superior da Home
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeTopAppBar(

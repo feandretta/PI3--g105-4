@@ -44,24 +44,28 @@ fun UnlockScreen(
     navController: NavHostController,
     viewModel: UnlockViewModel = viewModel()
 ) {
+    // Container principal da tela, centralizado
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
+        // Coluna que organiza os elementos verticalmente
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxWidth()
         ) {
+            // Logo da aplicação
             Image(
                 painter = painterResource(R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier.size(150.dp)
             )
 
+            // Título do aplicativo
             Text(
                 text = "Super ID",
                 style = MaterialTheme.typography.displayMedium,
@@ -70,16 +74,17 @@ fun UnlockScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
+            // Campo de senha com ícone de visibilidade
             OutlinedSecureTextField(
-                state = viewModel.senhaState,
+                state = viewModel.senhaState, // Estado da senha
                 label = { Text("Senha") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
                 textObfuscationMode = if (viewModel.senhaVisivel.value) {
-                    TextObfuscationMode.Visible
+                    TextObfuscationMode.Visible // Mostra texto se visibilidade ativa
                 } else {
-                    TextObfuscationMode.RevealLastTyped
+                    TextObfuscationMode.RevealLastTyped // Oculta após o último caractere
                 },
                 trailingIcon = {
                     val icon = if (viewModel.senhaVisivel.value) {
@@ -87,19 +92,22 @@ fun UnlockScreen(
                     } else {
                         Icons.Default.VisibilityOff
                     }
+                    // Botão para alternar visibilidade da senha
                     IconButton(onClick = { viewModel.toggleSenhaVisivel() }) {
                         Icon(icon, contentDescription = null)
                     }
                 }
             )
 
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(36.dp)) // Espaçamento entre campo e botão
 
+            // Botão de desbloquear
             Button(
                 onClick = {
+                    // Ação de desbloqueio usando a senha
                     viewModel.unlock(context) { success ->
                         if (success) {
-                            navController.navigate("home")
+                            navController.navigate("home") // Vai para tela principal
                         }
                     }
                 },
@@ -111,8 +119,9 @@ fun UnlockScreen(
                 Text("Desbloquear")
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp)) // Espaço entre botão e link
 
+            // Link para trocar de conta
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -127,8 +136,8 @@ fun UnlockScreen(
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.clickable {
-                        FirebaseAuth.getInstance().signOut()
-                        navController.navigate("signIn")
+                        FirebaseAuth.getInstance().signOut() // Faz logout
+                        navController.navigate("signIn") // Vai para tela de login
                     }
                 )
             }

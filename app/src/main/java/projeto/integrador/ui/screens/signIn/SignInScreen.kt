@@ -132,7 +132,7 @@ fun SignInScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    "Criar conta",
+                    "Entrar",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }

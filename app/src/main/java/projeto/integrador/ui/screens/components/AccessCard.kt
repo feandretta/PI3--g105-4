@@ -1,30 +1,11 @@
 package projeto.integrador.ui.screens.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -33,53 +14,63 @@ import projeto.integrador.utilities.CryptoManager
 
 @Composable
 fun AccessCard(
-    access: Access,
-    accessId: String,
-    onView: (String) -> Unit,
-    onEdit: (String) -> Unit,
-    onDelete: (String) -> Unit
+    access: Access, // Objeto contendo os dados do acesso
+    accessId: String, // ID único do acesso
+    onView: (String) -> Unit, // Ação para visualizar detalhes
+    onEdit: (String) -> Unit, // Ação para editar
+    onDelete: (String) -> Unit // Ação para deletar
 ) {
+    // Estado que controla a exibição do menu suspenso (Dropdown)
     var expanded by remember { mutableStateOf(false) }
 
+    // Cartão visual que exibe os dados do acesso
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(4.dp)
+            .fillMaxWidth() // Ocupa toda a largura disponível
+            .wrapContentHeight(), // Altura baseada no conteúdo
+        shape = MaterialTheme.shapes.medium, // Arredondamento dos cantos
+        elevation = CardDefaults.cardElevation(4.dp) // Sombra do cartão
     ) {
+        // Coluna com espaçamento interno
         Column(modifier = Modifier.padding(16.dp)) {
+            // Linha principal contendo dados e ícone de opções
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // Coluna com nome, email e senha descriptografada
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = access.nome.orEmpty(),
+                        text = access.nome.orEmpty(), // Nome do acesso
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp)) // Espaço entre elementos
+
                     Text(
-                        text = access.email.orEmpty(),
+                        text = access.email.orEmpty(), // Email relacionado
                         style = MaterialTheme.typography.bodyMedium
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(4.dp)) // Espaço entre elementos
+
                     Text(
-                        text = CryptoManager.decrypt(access.senha.orEmpty()),
+                        text = CryptoManager.decrypt(access.senha.orEmpty()), // Senha descriptografada
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
 
+                // Caixa com botão de mais opções (ícone de 3 pontinhos)
                 Box {
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "Mais opções")
                     }
 
+                    // Menu suspenso com ações (visualizar, editar, deletar)
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
+                        // Ação: Visualizar
                         DropdownMenuItem(
                             text = { Text("Visualizar") },
                             onClick = {
@@ -87,6 +78,8 @@ fun AccessCard(
                                 onView(accessId)
                             }
                         )
+
+                        // Ação: Editar
                         DropdownMenuItem(
                             text = { Text("Editar") },
                             onClick = {
@@ -94,6 +87,8 @@ fun AccessCard(
                                 onEdit(accessId)
                             }
                         )
+
+                        // Ação: Deletar
                         DropdownMenuItem(
                             text = { Text("Deletar") },
                             onClick = {

@@ -2,32 +2,11 @@ package projeto.integrador.ui.screens.accessManipulation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -41,24 +20,27 @@ import projeto.integrador.utilities.CriarCategoriaDialog
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun AccessDialog(
-    onDismiss: () -> Unit,
-    onSaveComplete: () -> Unit = {},
-    viewModel: AccessDialogViewModel = viewModel()
+    onDismiss: () -> Unit, // Função chamada ao fechar o diálogo
+    onSaveComplete: () -> Unit = {}, // Função opcional executada após salvar
+    viewModel: AccessDialogViewModel = viewModel() // ViewModel da tela
 ) {
-    val showCategoriaDialog = remember { mutableStateOf(false) }
-    val isEditing = viewModel.mode.value != AccessDialogMode.VIEW
-    val isFormValid = viewModel.isFormValid()
+    val showCategoriaDialog = remember { mutableStateOf(false) } // Controla se o diálogo de criar categoria será mostrado
+    val isEditing = viewModel.mode.value != AccessDialogMode.VIEW // Verifica se está em modo de edição ou criação
+    val isFormValid = viewModel.isFormValid() // Verifica se os campos obrigatórios estão preenchidos
 
+    // Carrega as categorias ao abrir o diálogo
     LaunchedEffect(Unit) {
         viewModel.carregarCategorias()
     }
 
+    // Cria o diálogo ocupando toda a tela
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             Scaffold(
+                // Barra superior com título, botão voltar e salvar
                 topBar = {
                     TopAppBar(
                         title = {
@@ -76,6 +58,7 @@ fun AccessDialog(
                             }
                         },
                         actions = {
+                            // Botão "Salvar" aparece apenas no modo de edição ou criação
                             if (isEditing) {
                                 TextButton(
                                     enabled = isFormValid,
@@ -99,6 +82,7 @@ fun AccessDialog(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    // Campo obrigatório: Nome
                     RequiredTextField(
                         value = viewModel.nome.value,
                         onValueChange = { viewModel.nome.value = it },
@@ -107,6 +91,7 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
+                    // Campo obrigatório: Senha
                     RequiredTextField(
                         value = viewModel.senha.value,
                         onValueChange = { viewModel.senha.value = it },
@@ -115,13 +100,14 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
+                    // Campo de seleção de categoria com opção de adicionar nova
                     SelectorField(
                         label = "Categoria",
                         selectedItem = viewModel.categoria.value,
                         items = viewModel.categoriasDisponiveis.value,
                         onItemSelected = { categoria ->
                             if (categoria.startsWith("+")) {
-                                showCategoriaDialog.value = true
+                                showCategoriaDialog.value = true // Abre diálogo de nova categoria
                             } else {
                                 viewModel.onCategoriaSelecionada(categoria)
                             }
@@ -129,6 +115,7 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
+                    // Campo opcional: URL
                     OutlinedTextField(
                         value = viewModel.url.value,
                         onValueChange = { viewModel.url.value = it },
@@ -137,6 +124,7 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
+                    // Campo opcional: Email
                     OutlinedTextField(
                         value = viewModel.email.value,
                         onValueChange = { viewModel.email.value = it },
@@ -145,6 +133,7 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
+                    // Campo opcional: Descrição (com altura fixa)
                     OutlinedTextField(
                         value = viewModel.descricao.value,
                         onValueChange = { viewModel.descricao.value = it },
@@ -155,12 +144,13 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
+                    // Diálogo de criação de nova categoria
                     CriarCategoriaDialog(
                         showDialog = showCategoriaDialog.value,
                         onDismiss = { showCategoriaDialog.value = false },
                         onCategoryCreated = {
-                            viewModel.onCategoriaSelecionada(it)
-                            viewModel.carregarCategorias()
+                            viewModel.onCategoriaSelecionada(it) // Seleciona nova categoria
+                            viewModel.carregarCategorias() // Recarrega lista
                             showCategoriaDialog.value = false
                         }
                     )

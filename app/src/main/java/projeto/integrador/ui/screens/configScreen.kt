@@ -1,23 +1,18 @@
 // Declaração do pacote
 package projeto.integrador.ui.screens
 
-// Imports do Android
+// Imports necessários
 import android.app.UiModeManager
 import android.os.Build
 import android.widget.Toast
-
-// Imports do Jetpack Compose para UI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,24 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import projeto.integrador.ui.screens.components.ConfigCard
-
-// Navegação
-
-// Firebase Authentication
-import com.google.firebase.auth.auth
-
-// Componentes locais
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import projeto.integrador.ui.screens.components.ConfigCard
 import projeto.integrador.utilities.signOut
 
 @Composable
@@ -52,11 +33,13 @@ fun ConfigScreen(
 ) {
     val context = LocalContext.current
 
+    // Estados locais para switches
     var darkMode by remember { mutableStateOf(false) }
     var notificationsEnabled by remember { mutableStateOf(true) }
 
-    val auth = Firebase.auth
+    val auth = Firebase.auth // Referência à instância do Firebase Auth
 
+    // Lista vertical com padding e espaçamento entre itens
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -65,6 +48,7 @@ fun ConfigScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
+        // Título principal
         item {
             Text(
                 text = "Configurações",
@@ -74,6 +58,7 @@ fun ConfigScreen(
             )
         }
 
+        // Seção de aparência
         item {
             Text(
                 text = "Aparência",
@@ -82,6 +67,7 @@ fun ConfigScreen(
             )
         }
 
+        // Switch do modo escuro
         item {
             ConfigCard(
                 icon = Icons.Filled.DarkMode,
@@ -96,6 +82,7 @@ fun ConfigScreen(
             )
         }
 
+        // Seção de segurança
         item {
             Text(
                 text = "Segurança",
@@ -104,6 +91,7 @@ fun ConfigScreen(
             )
         }
 
+        // Alterar senha (via email)
         item {
             ConfigCard(
                 icon = Icons.Filled.Lock,
@@ -129,6 +117,7 @@ fun ConfigScreen(
             )
         }
 
+        // Seção de notificações
         item {
             Text(
                 text = "Notificações",
@@ -137,6 +126,7 @@ fun ConfigScreen(
             )
         }
 
+        // Switch de notificações push
         item {
             ConfigCard(
                 icon = Icons.Filled.Notifications,
@@ -151,6 +141,7 @@ fun ConfigScreen(
             )
         }
 
+        // Seção "Sobre"
         item {
             Text(
                 text = "Sobre",
@@ -159,6 +150,7 @@ fun ConfigScreen(
             )
         }
 
+        // Versão do app
         item {
             ConfigCard(
                 icon = Icons.Filled.Info,
@@ -167,6 +159,7 @@ fun ConfigScreen(
             )
         }
 
+        // Termos de uso
         item {
             ConfigCard(
                 icon = Icons.Filled.Description,
@@ -185,6 +178,7 @@ fun ConfigScreen(
             )
         }
 
+        // Política de privacidade
         item {
             ConfigCard(
                 icon = Icons.Filled.Description,
@@ -203,14 +197,15 @@ fun ConfigScreen(
             )
         }
 
+        // Logout da conta
         item {
             ConfigCard(
                 icon = Icons.AutoMirrored.Filled.Logout,
                 title = "Deslogar",
                 description = "Sai da sua conta no aplicativo",
                 onClick = {
-                    signOut()
-                    navController.navigate("signUp")
+                    signOut() // Encerra a sessão do usuário
+                    navController.navigate("signUp") // Volta para tela de cadastro/login
                 },
                 trailingContent = {
                     Icon(
@@ -223,4 +218,3 @@ fun ConfigScreen(
         }
     }
 }
-
