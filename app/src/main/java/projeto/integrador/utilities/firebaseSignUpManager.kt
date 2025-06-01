@@ -73,6 +73,9 @@ suspend fun cadastro(
         usuario.uid = authResult.user?.uid ?: return false
         usuario.imei = DeviceUtils.getDeviceImei(context)
 
+        //Manda o email pra verificação
+        authResult.user?.sendEmailVerification()
+
         // Salva os dados do usuário no Firestore
         db.collection("usuarios")
             .document(usuario.uid.toString())

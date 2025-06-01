@@ -106,22 +106,6 @@ fun SignInScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                /*Checkbox(
-                    checked = viewModel.manterConectado,
-                    onCheckedChange = { viewModel.manterConectado = it }
-                )
-                Text(
-                    "Mantenha-me conectado",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )*/
-            }
-
             Spacer(modifier = Modifier.height(36.dp))
 
             Button(

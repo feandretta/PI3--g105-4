@@ -9,7 +9,6 @@ class SignInViewModel : ViewModel() {
     val emailState = TextFieldState()
     val senhaState = TextFieldState()
 
-    var manterConectado = mutableStateOf(false)
     var senhaVisivel = mutableStateOf(false)
 
     fun toggleSenhaVisivel() {

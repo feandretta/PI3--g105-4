@@ -20,7 +20,6 @@ class SignUpViewModel : ViewModel() {
 
     var senhaVisivel = mutableStateOf(false)
     var confirmarSenhaVisivel = mutableStateOf(false)
-    var termosAceitos = mutableStateOf(false)
 
     fun toggleSenhaVisivel() {
         senhaVisivel.value = !senhaVisivel.value
@@ -31,7 +30,6 @@ class SignUpViewModel : ViewModel() {
     }
     @RequiresPermission("android.permission.READ_PHONE_STATE")
     fun signUp(context: Context, onResult: (Boolean, String) -> Unit) {
-
 
         if(senhaState.text.toString() == confirmarSenhaState.text.toString()){
             var usuario: User = User(nomeState.text.toString(),
