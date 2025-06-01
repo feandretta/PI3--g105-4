@@ -6,9 +6,4 @@ data class User(
     var senha: String? = null,
     var imei: String? = null,
     var uid: String? = null
-){
-    fun isEmpty(): Boolean{
-        return senha?.isEmpty() == true || email?.isEmpty() == true || nome?.isEmpty() == true
-        return false
-    }
-}
+)

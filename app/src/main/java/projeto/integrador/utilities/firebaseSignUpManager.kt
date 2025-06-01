@@ -60,7 +60,11 @@ suspend fun cadastro(
     context: Context,
     usuario: User
 ): Boolean {
-    if (usuario.isEmpty()) return false
+
+    if (usuario.nome.isNullOrBlank() || usuario.email.isNullOrBlank() || usuario.senha.isNullOrBlank()){
+        return false
+    }
+    
     usuario.senha?.length?.let { if (it < 6) return false }
 
     val auth = Firebase.auth

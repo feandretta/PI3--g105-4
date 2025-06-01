@@ -2,17 +2,39 @@ package projeto.integrador.ui.screens.accessManipulation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import projeto.integrador.ui.screens.components.RequiredTextField
+import projeto.integrador.ui.screens.components.SelectorField
 import projeto.integrador.utilities.CriarCategoriaDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +48,6 @@ fun AccessDialog(
     val showCategoriaDialog = remember { mutableStateOf(false) }
     val isEditing = viewModel.mode.value != AccessDialogMode.VIEW
     val isFormValid = viewModel.isFormValid()
-    var expanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.carregarCategorias()
@@ -87,25 +108,39 @@ fun AccessDialog(
                     )
 
                     RequiredTextField(
-                        value = viewModel.url.value,
-                        onValueChange = { viewModel.url.value = it },
-                        label = "URL",
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = isEditing
-                    )
-
-                    RequiredTextField(
-                        value = viewModel.email.value,
-                        onValueChange = { viewModel.email.value = it },
-                        label = "Email",
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = isEditing
-                    )
-
-                    RequiredTextField(
                         value = viewModel.senha.value,
                         onValueChange = { viewModel.senha.value = it },
                         label = "Senha",
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = isEditing
+                    )
+
+                    SelectorField(
+                        label = "Categoria",
+                        selectedItem = viewModel.categoria.value,
+                        items = viewModel.categoriasDisponiveis.value,
+                        onItemSelected = { categoria ->
+                            if (categoria.startsWith("+")) {
+                                showCategoriaDialog.value = true
+                            } else {
+                                viewModel.onCategoriaSelecionada(categoria)
+                            }
+                        },
+                        enabled = isEditing
+                    )
+
+                    OutlinedTextField(
+                        value = viewModel.url.value,
+                        onValueChange = { viewModel.url.value = it },
+                        label = { Text("URL") },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = isEditing
+                    )
+
+                    OutlinedTextField(
+                        value = viewModel.email.value,
+                        onValueChange = { viewModel.email.value = it },
+                        label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = isEditing
                     )
@@ -120,45 +155,6 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded }
-                    ) {
-                        OutlinedTextField(
-                            readOnly = true,
-                            value = viewModel.categoria.value,
-                            onValueChange = {},
-                            label = { Text("Categoria") },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                            modifier = Modifier.menuAnchor().fillMaxWidth(),
-                            enabled = isEditing
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            viewModel.categoriasDisponiveis.value.forEach { categoria ->
-                                DropdownMenuItem(
-                                    text = {
-                                        if (categoria.startsWith("+")) {
-                                            Text(categoria)
-                                        } else {
-                                            Text(categoria)
-                                        }
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        if (categoria.startsWith("+")) {
-                                            showCategoriaDialog.value = true
-                                        } else {
-                                            viewModel.onCategoriaSelecionada(categoria)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
                     CriarCategoriaDialog(
                         showDialog = showCategoriaDialog.value,
                         onDismiss = { showCategoriaDialog.value = false },
