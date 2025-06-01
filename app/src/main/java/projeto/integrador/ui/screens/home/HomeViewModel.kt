@@ -1,5 +1,6 @@
 package projeto.integrador.ui.screens.home
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentSnapshot
@@ -7,9 +8,11 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.State
 import projeto.integrador.data.model.Access
 import projeto.integrador.utilities.deleteAccess
 import projeto.integrador.utilities.getAllAccess
+import projeto.integrador.utilities.getAllCategoryNames
 
 data class AccessWithId(
     val id: String,
@@ -20,6 +23,15 @@ class HomeViewModel : ViewModel() {
 
     private val _accessItems = MutableStateFlow<List<AccessWithId>>(emptyList())
     val accessItems: StateFlow<List<AccessWithId>> = _accessItems
+
+    private val _categoryNames = mutableStateOf<List<String>>(emptyList())
+    val categoryNames: State<List<String>> = _categoryNames
+
+    fun loadCategoryNames() {
+        viewModelScope.launch {
+            _categoryNames.value = getAllCategoryNames()
+        }
+    }
 
     private val handler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()

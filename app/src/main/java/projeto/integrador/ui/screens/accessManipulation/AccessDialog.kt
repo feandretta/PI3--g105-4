@@ -21,13 +21,16 @@ import projeto.integrador.utilities.CriarCategoriaDialog
 fun AccessDialog(
     onDismiss: () -> Unit,
     onSaveComplete: () -> Unit = {},
-    mode: AccessDialogMode,
-    accessId: String = "",
     viewModel: AccessDialogViewModel = viewModel()
 ) {
     val showCategoriaDialog = remember { mutableStateOf(false) }
     val isEditing = viewModel.mode.value != AccessDialogMode.VIEW
     val isFormValid = viewModel.isFormValid()
+    var expanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.carregarCategorias()
+    }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -117,24 +120,53 @@ fun AccessDialog(
                         enabled = isEditing
                     )
 
-                    Text(
-                        text = "Categoria: ${viewModel.categoria.value}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = !expanded }
+                    ) {
+                        OutlinedTextField(
+                            readOnly = true,
+                            value = viewModel.categoria.value,
+                            onValueChange = {},
+                            label = { Text("Categoria") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth(),
+                            enabled = isEditing
+                        )
 
-                    if (isEditing) {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = { showCategoriaDialog.value = true }
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
                         ) {
-                            Text("Selecionar Categoria")
+                            viewModel.categoriasDisponiveis.value.forEach { categoria ->
+                                DropdownMenuItem(
+                                    text = {
+                                        if (categoria.startsWith("+")) {
+                                            Text(categoria)
+                                        } else {
+                                            Text(categoria)
+                                        }
+                                    },
+                                    onClick = {
+                                        expanded = false
+                                        if (categoria.startsWith("+")) {
+                                            showCategoriaDialog.value = true
+                                        } else {
+                                            viewModel.onCategoriaSelecionada(categoria)
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
-
                     CriarCategoriaDialog(
                         showDialog = showCategoriaDialog.value,
                         onDismiss = { showCategoriaDialog.value = false },
-                        //onCategoryCreated = { viewModel.onCategoriaSelecionada(it) }
+                        onCategoryCreated = {
+                            viewModel.onCategoriaSelecionada(it)
+                            viewModel.carregarCategorias()
+                            showCategoriaDialog.value = false
+                        }
                     )
                 }
             }

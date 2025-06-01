@@ -10,6 +10,7 @@ import projeto.integrador.config.generateAccessToken
 import projeto.integrador.data.model.Access
 import projeto.integrador.utilities.alterAccess
 import projeto.integrador.utilities.getAccessByUser
+import projeto.integrador.utilities.getAllCategoryNames
 import projeto.integrador.utilities.registerAccess
 
 enum class AccessDialogMode {
@@ -23,6 +24,8 @@ class AccessDialogViewModel : ViewModel() {
     val senha = mutableStateOf("")
     val descricao = mutableStateOf("")
     val categoria = mutableStateOf("Selecionar Categoria")
+
+    val categoriasDisponiveis = mutableStateOf<List<String>>(emptyList())
 
     val mode = mutableStateOf(AccessDialogMode.CREATE)
     var accessId: String? = null
@@ -84,6 +87,19 @@ class AccessDialogViewModel : ViewModel() {
             }
         }
     }
+
+    fun carregarCategorias() {
+        viewModelScope.launch {
+            try {
+                val categorias = getAllCategoryNames()
+                categoriasDisponiveis.value = listOf("+ Adicionar nova categoria") + categorias
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 
     fun onCategoriaSelecionada(novaCategoria: String) {
         categoria.value = novaCategoria

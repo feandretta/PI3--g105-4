@@ -2,6 +2,7 @@ package projeto.integrador.ui.screens.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -30,6 +32,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -73,16 +76,18 @@ fun HomeScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var accessIdToDelete by remember { mutableStateOf<String?>(null) }
 
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+
     val accessList by viewModel.accessItems.collectAsState()
+    val categoryList by viewModel.categoryNames
 
     LaunchedEffect(Unit) {
         viewModel.loadAccessItems()
+        viewModel.loadCategoryNames()
     }
 
     if (showAccessDialog) {
         AccessDialog(
-            mode = accessDialogViewModel.mode.value,
-            accessId = accessDialogViewModel.accessId ?: "",
             onDismiss = {
                 showAccessDialog = false
                 viewModel.loadAccessItems()
@@ -90,8 +95,54 @@ fun HomeScreen(
             onSaveComplete = {
                 showAccessDialog = false
                 viewModel.loadAccessItems()
+                viewModel.loadCategoryNames()
             },
             viewModel = accessDialogViewModel
+        )
+    }
+
+    if (showDeleteDialog && accessIdToDelete != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showDeleteDialog = false
+                accessIdToDelete = null
+            },
+            title = { Text("Excluir acesso") },
+            text = { Text("Tem certeza que deseja excluir este acesso?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val id = accessIdToDelete
+                        if (id != null) {
+                            viewModel.deleteAccessById(
+                                id = id,
+                                onComplete = {
+                                    showDeleteDialog = false
+                                    accessIdToDelete = null
+                                    viewModel.loadAccessItems() // Atualiza categorias após exclusão
+                                },
+                                onError = {
+                                    // Aqui você pode mostrar um Snackbar ou Toast futuramente
+                                    showDeleteDialog = false
+                                    accessIdToDelete = null
+                                }
+                            )
+                        }
+                    }
+                ) {
+                    Text("Excluir")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        accessIdToDelete = null
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
         )
     }
 
@@ -100,45 +151,65 @@ fun HomeScreen(
         drawerContent = {
             ModalDrawerSheet {
                 Spacer(modifier = Modifier.height(48.dp))
+
                 Text(
-                    text = "Categorias (em breve)",
+                    text = "Filtrar por Categoria",
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
+
+                // Opção "Todas" para mostrar sem filtro
+                Text(
+                    text = "Todas",
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .clickable {
+                            selectedCategory = null
+                            scope.launch { drawerState.close() }
+                        },
+                    style = if (selectedCategory == null) {
+                        MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
+                    } else {
+                        MaterialTheme.typography.bodyLarge
+                    }
+                )
+
+                // Lista de categorias vindas do ViewModel
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    items(categoryList) { category ->
+                        Text(
+                            text = category,
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .clickable {
+                                    selectedCategory = category
+                                    scope.launch { drawerState.close() }
+                                },
+                            style = if (selectedCategory == category) {
+                                MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary)
+                            } else {
+                                MaterialTheme.typography.bodyLarge
+                            }
+                        )
+                    }
+                }
             }
         }
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text("Super ID") },
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = null)
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { navController.navigate("settings") }) {
-                            Icon(Icons.Default.Person, contentDescription = null)
-                        }
-                    }
+                HomeTopAppBar(
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onProfileClick = { navController.navigate("profile") }
                 )
             },
             bottomBar = {
-                NavigationBar {
-                    listOf(
-                        NavItem("Senhas", Icons.Default.Key),
-                        NavItem("Scanner", Icons.Default.QrCodeScanner),
-                        NavItem("Configurações", Icons.Default.Settings)
-                    ).forEach { item ->
-                        NavigationBarItem(
-                            selected = selectedBottomBarItem == item.route,
-                            onClick = { selectedBottomBarItem = item.route },
-                            icon = { Icon(item.icon, contentDescription = null) },
-                            label = { Text(item.route) }
-                        )
-                    }
-                }
+                HomeBottomBar(
+                    selectedItem = selectedBottomBarItem,
+                    onItemSelected = { selectedBottomBarItem = it }
+                )
             },
             floatingActionButton = {
                 if (selectedBottomBarItem == "Senhas") {
@@ -162,8 +233,13 @@ fun HomeScreen(
                 when (selectedBottomBarItem) {
 
                     "Senhas" -> {
+
+                        val filteredList = selectedCategory?.let { cat ->
+                            accessList.filter { it.access.categoria == cat }
+                        } ?: accessList
+
                         AccessListContent(
-                            accessList = accessList,
+                            accessList = filteredList,
                             padding = innerPadding,
                             onView = { id ->
                                 accessDialogViewModel.loadAccessById(id, AccessDialogMode.VIEW)
@@ -175,13 +251,14 @@ fun HomeScreen(
                             },
                             onDelete = { id ->
                                 accessIdToDelete = id
+                                showDeleteDialog = true
                             }
                         )
                     }
 
                     "Scanner" -> QrCodeScannerScreen(innerPadding)
 
-                    "Configurações" -> ConfigScreen(innerPadding)
+                    "Configurações" -> ConfigScreen(innerPadding,navController)
                 }
             }
         )
@@ -228,4 +305,48 @@ fun AccessListContent(
             }
         }
     }
+}
+
+@Composable
+private fun HomeBottomBar(
+    selectedItem: String,
+    onItemSelected: (String) -> Unit
+) {
+    val items = listOf(
+        NavItem("Senhas", Icons.Default.Key),
+        NavItem("Scanner", Icons.Default.QrCodeScanner),
+        NavItem("Configurações", Icons.Default.Settings)
+    )
+
+    NavigationBar {
+        items.forEach { item ->
+            NavigationBarItem(
+                selected = selectedItem == item.route,
+                onClick = { onItemSelected(item.route) },
+                icon = { Icon(item.icon, contentDescription = null) },
+                label = { Text(item.route) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeTopAppBar(
+    onMenuClick: () -> Unit,
+    onProfileClick: () -> Unit
+) {
+    TopAppBar(
+        title = { Text("Super ID") },
+        navigationIcon = {
+            IconButton(onClick = onMenuClick) {
+                Icon(Icons.Default.Menu, contentDescription = null)
+            }
+        },
+        actions = {
+            IconButton(onClick = onProfileClick) {
+                Icon(Icons.Default.Person, contentDescription = null)
+            }
+        }
+    )
 }

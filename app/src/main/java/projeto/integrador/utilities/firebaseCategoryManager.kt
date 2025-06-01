@@ -25,13 +25,14 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CriarCategoriaDialog(
     showDialog: Boolean,
     onDismiss: () -> Unit,
-    onCategoryCreated: () -> Unit = {}
+    onCategoryCreated: (String) -> Unit = {}
 ) {
     var categoryName by remember { mutableStateOf("") }
     val db = Firebase.firestore
@@ -65,7 +66,7 @@ fun CriarCategoriaDialog(
                         saveCategory(
                             name = categoryName,
                             onSuccess = {
-                                onCategoryCreated()
+                                onCategoryCreated(categoryName)
                                 onDismiss()
                                 categoryName = "" // Reset do campo
 
@@ -128,4 +129,22 @@ private fun saveCategory(
             // Em caso de erro, apenas loga no console
             println("Erro ao salvar categoria: ${e.message}")
         }
+    }
+
+suspend fun getAllCategoryNames(): List<String> {
+    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return emptyList()
+
+    return try {
+        val snapshot = FirebaseFirestore.getInstance()
+            .collection("usuarios")
+            .document(userId)
+            .collection("categories")
+            .get()
+            .await()
+
+        snapshot.documents.mapNotNull { it.getString("name") }
+    } catch (e: Exception) {
+        println("Erro ao buscar categorias: ${e.message}")
+        emptyList()
+    }
 }
