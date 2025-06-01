@@ -132,7 +132,7 @@ const getUserCredentials = async (token: string) => {
             
             const res = await axios.post(`${baseURL}/performAuth`, {
                 apiKey: "fe8fde5d-90a5-4707-8ecb-6b93301cd1c4",
-                siteUrl: window.location.hostname || "localhost"
+                siteUrl: window.location.hostname || "www.localhost-dev.com"
             }, {
                 headers: {
                     'Content-Type': 'application/json',
