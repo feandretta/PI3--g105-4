@@ -10,7 +10,7 @@ const { Timestamp } = admin.firestore;
 const corsMiddleware = cors({ origin: true });
 
 // 🔐 Gerar QR Code de login
-export const performAuth = functions.https.onRequest((req, res) => {
+export const performAuth = functions.https.onRequest(async (req, res) => {
     corsMiddleware(req, res, async () => {
         try {
             const { apiKey, siteUrl } = req.body;
@@ -29,10 +29,9 @@ export const performAuth = functions.https.onRequest((req, res) => {
                 status: "pending"
             });
 
-            const qrImage = await QRCode.toDataURL(loginToken);
-            return res.status(200).json({ qrCode: qrImage, loginToken });
+            return res.status(200).json({loginToken : loginToken });
         } catch (err) {
-            console.error("Erro ao gerar QR Code:", err);
+            console.error("Erro ao retornar token", err);
             return res.status(500).json({ error: "Erro interno" });
         }
     });
@@ -72,12 +71,27 @@ export const confirmAuth = functions.https.onRequest((req, res) => {
             }
 
             const acesso = acessosSnapshot.docs[0].data();
-            const senhaDescriptografada = Buffer.from(acesso.senha, "base64").toString("utf-8");
+
+                        const userRef = db
+                .collection("usuarios")
+                .doc(docToken.user);
+
+            const userSnap = await userRef.get();
+
+            if (!userSnap.exists) {
+                return res.status(404).json({ error: "Usuário não existente" });
+            }
+
+            const user = userSnap.data();
+
+            if (!user?.nome || !user?.email) {
+                return res.status(400).json({ error: "Dados de usuário incompletos." });
+            }
 
             return res.status(200).json({
                 success: true,
-                email: acesso.email,
-                password: senhaDescriptografada
+                nome : user.nome,
+                email: acesso.email
             });
         } catch (err) {
             console.error("Erro ao confirmar login:", err);
