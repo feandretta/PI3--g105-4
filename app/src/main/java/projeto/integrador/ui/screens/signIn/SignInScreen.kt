@@ -49,7 +49,7 @@ fun SignInScreen(
     viewModel: SignInViewModel = remember { SignInViewModel() }
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
@@ -68,7 +68,7 @@ fun SignInScreen(
 
             Text(
                 text = "Super ID",
-                fontSize = 28.sp,
+                style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 24.dp)
@@ -106,6 +106,18 @@ fun SignInScreen(
                 }
             )
 
+            Text(
+                "Esqueci minha senha",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(top = 8.dp, start = 8.dp)
+                    .clickable {
+                        navController.navigate("forgotPassword")
+                    }
+            )
+
             Spacer(modifier = Modifier.height(36.dp))
 
             Button(
@@ -126,11 +138,15 @@ fun SignInScreen(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Não tem uma conta? ", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
                 Text(
-                    "Registre-se aqui",
-                    color = Color.Blue,
-                    fontSize = 14.sp,
+                    "Não tem uma conta? ",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    "Regitre-se aqui",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.clickable {
                         navController.navigate("signUp")
                     }

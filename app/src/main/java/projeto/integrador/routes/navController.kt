@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import projeto.integrador.ui.screens.CategoriasScreen
 import projeto.integrador.ui.screens.OnboardingScreen
+import projeto.integrador.ui.screens.PasswordRecoveryScreen
 import projeto.integrador.ui.screens.ProfileScreen
 import projeto.integrador.ui.screens.signIn.SignInScreen
 import projeto.integrador.ui.screens.signUp.SignUpScreen
@@ -79,6 +80,13 @@ fun NavigationSetup(navController: NavHostController) {
 
         composable("profile") {
             ProfileScreen()
+        }
+
+        composable("forgotPassword"){
+            PasswordRecoveryScreen(
+                navController = navController,
+                context = context
+            )
         }
     }
 }

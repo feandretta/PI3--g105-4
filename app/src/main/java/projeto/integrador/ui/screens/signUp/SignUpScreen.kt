@@ -31,7 +31,7 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = remember { SignUpViewModel() }
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
@@ -129,7 +129,7 @@ fun SignUpScreen(
             Button(
                 onClick = {
                     viewModel.signUp(context) { success, message ->
-                        if (success) navController.navigate("home")
+                        if (success) navController.navigate("signIn")
                     }
                 },
                 modifier = Modifier
