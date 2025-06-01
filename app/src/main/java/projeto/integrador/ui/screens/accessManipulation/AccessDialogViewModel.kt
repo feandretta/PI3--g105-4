@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import projeto.integrador.config.generateAccessToken
 import projeto.integrador.data.model.Access
+import projeto.integrador.utilities.CryptoManager
 import projeto.integrador.utilities.alterAccess
 import projeto.integrador.utilities.getAccessByUser
 import projeto.integrador.utilities.getAllCategoryNames
@@ -36,16 +37,18 @@ class AccessDialogViewModel : ViewModel() {
         nome.value = access.nome.orEmpty()
         url.value = access.dominio.orEmpty()
         email.value = access.email.orEmpty()
-        senha.value = access.senha.orEmpty()
         descricao.value = access.descricao.orEmpty()
         categoria.value = access.categoria.orEmpty()
+
+        if (access.senha.orEmpty() != ""){
+            senha.value = CryptoManager.decrypt(access.senha.toString())
+        }else{
+            senha.value = access.senha.orEmpty()
+        }
     }
 
     fun isFormValid(): Boolean {
-        return nome.value.isNotBlank() &&
-                url.value.isNotBlank() &&
-                email.value.isNotBlank() &&
-                senha.value.isNotBlank()
+        return nome.value.isNotBlank() && senha.value.isNotBlank()
     }
 
     fun loadAccessById(id: String, mode: AccessDialogMode) {
