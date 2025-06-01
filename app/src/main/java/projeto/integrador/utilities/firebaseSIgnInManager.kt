@@ -1,4 +1,4 @@
-package projeto.integrador.utilities.funcs
+package projeto.integrador.utilities
 
 import android.content.Context
 import android.util.Log
@@ -17,9 +17,16 @@ fun validation(
     val auth = Firebase.auth
 
     auth.signInWithEmailAndPassword(email, senha)
-        .addOnSuccessListener {
-            Log.d("FirebaseAuth", "Login feito com sucesso")
-            onResult(true, "Login feito com sucesso")
+        .addOnSuccessListener { authResult ->
+            val user = authResult.user
+            if (user != null && user.isEmailVerified) {
+                Log.d("FirebaseAuth", "Login feito com sucesso")
+                onResult(true, "Login feito com sucesso")
+            } else {
+                auth.signOut()
+                Log.w("FirebaseAuth", "Email não verificado")
+                onResult(false, "Por favor, verifique seu e-mail antes de fazer login.")
+            }
         }
         .addOnFailureListener { exception ->
             Log.e("FirebaseAuth", "Erro ao logar", exception)

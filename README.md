@@ -30,7 +30,3 @@ Siga o fluxo de branches:
 
 ## Cronograma
 - **Release Final:** 01 de junho de 2025
-
-## Contato
-Equipe SuperID – Contate os orientadores para mais informações.
-

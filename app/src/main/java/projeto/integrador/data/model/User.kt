@@ -1,8 +1,14 @@
 package projeto.integrador.data.model
 
-class Usuario(nome: String, email: String, senha: String, confirmarSenha: String) {
-    var nome: String = ""
-    var email: String = ""
-    var senha: String = ""
-    var confirmarSenha: String = ""
+data class User(
+    var nome: String? = null,
+    var email: String? = null,
+    var senha: String? = null,
+    var imei: String? = null,
+    var uid: String? = null
+){
+    fun isEmpty(): Boolean{
+        return senha?.isEmpty() == true || email?.isEmpty() == true || nome?.isEmpty() == true
+        return false
+    }
 }

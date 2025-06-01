@@ -30,7 +30,7 @@ import com.google.firebase.ktx.Firebase
 
 // Imports locais
 import projeto.integrador.data.model.Category
-import projeto.integrador.utilities.funcs.CriarCategoriaDialog
+import projeto.integrador.utilities.CriarCategoriaDialog
 
 /**
  * Tela que exibe a lista de categorias do usuário.
@@ -213,7 +213,6 @@ fun CategoriasScreen(
                                         Box(
                                             modifier = Modifier
                                                 .size(24.dp)  // Tamanho fixo
-                                                .background(Color(android.graphics.Color.parseColor(categoria.color)))  // Cor da categoria
                                                 .padding(4.dp)  // Espaçamento interno
                                         )
                                         Spacer(modifier = Modifier.width(16.dp))  // Espaço entre o ícone e o texto
