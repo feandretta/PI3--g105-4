@@ -65,24 +65,33 @@ export default function LoginQR() {
     };
 
     const verificarStatusLogin = async (token: string) => {
-        try {
-            const res = await axios.get(`${baseURL}/checkAuthStatus?token=${token}`);
+    try {
+        const res = await axios.get(`${baseURL}/getLoginStatus?loginToken=${token}`);
+        console.log("verificando login")
             
-            if (res.data.status === 'authenticated') {
-                // Login bem-sucedido
-                if (polling) {
-                    clearInterval(polling);
-                    setPolling(null);
-                }
-                setScanStatus('success');
-                // Pequeno atraso para mostrar a animação de sucesso
-                setTimeout(() => {
-                    setUserData(res.data.user);
-                    setIsAuthenticated(true);
-                    setTimeLeft(null);
-                    setScanStatus('idle');
-                }, 1000);
-            } else if (res.data.status === 'pending') {
+    if (res.data.status === 'authenticated') {
+        if (polling) {
+            clearInterval(polling);
+            setPolling(null);
+    }
+
+    setScanStatus('success');
+
+    // Espera 1 segundo para mostrar o feedback de sucesso
+    setTimeout(async () => {
+        const dados = await getUserCredentials(token);
+        if (dados) {
+            setUserData(dados);
+            setIsAuthenticated(true);
+            setTimeLeft(null);
+            setScanStatus('idle');
+        } else {
+            setErro("Erro ao obter dados do usuário.");
+            setScanStatus('error');
+        }
+    }, 1000);
+}
+ else if (res.data.status === 'pending') {
                 setScanStatus('scanning');
             }
         } catch (err) {
@@ -90,6 +99,29 @@ export default function LoginQR() {
             setScanStatus('error');
         }
     };
+const getUserCredentials = async (token: string) => {
+    try {
+        const res = await axios.post(`${baseURL}/confirmAuth`, {
+            loginToken: token
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (res.data.success) {
+            return {
+                name: res.data.nome,
+                email: res.data.email
+            };
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao confirmar login:", error);
+        return null;
+    }
+};
 
     const gerarQRCode = async () => {
         setLoading(true);
@@ -113,11 +145,13 @@ export default function LoginQR() {
                 setQRCode(res.data.qrCode);
                 setToken(res.data.loginToken);
                 setTimeLeft(90); // 1 minuto e 30 segundos
+                console.log("gerado qr code");
                 
                 // Iniciar verificação periódica do status de autenticação
                 if (res.data.loginToken) {
                     const intervalId = window.setInterval(() => {
                         verificarStatusLogin(res.data.loginToken);
+                        console.log("verificando status...")
                     }, 3000) as unknown as number;
                     setPolling(intervalId);
                 }
@@ -282,9 +316,6 @@ export default function LoginQR() {
                 {erro && (
                     <div className="mt-4 p-3 bg-red-900/30 border border-red-700 rounded-lg">
                         <p className="text-red-400 text-sm">{erro}</p>
-                        <p className="text-red-300 text-xs mt-1">
-                            Certifique-se de que o emulador do Firebase Functions está rodando.
-                        </p>
                     </div>
                 )}
             </div>
