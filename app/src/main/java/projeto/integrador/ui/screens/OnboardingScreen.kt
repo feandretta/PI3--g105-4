@@ -56,19 +56,19 @@ fun OnboardingScreen(navController: NavHostController, sharedPreferences: Shared
                     when (page) {
                         0 -> OnboardingPage(
                             title = "SuperID: Um novo jeito de fazer login",
-                            description = "Evite memorizar dezenas de senhas...",
+                            description = "Evite memorizar dezenas de senhas. Com o SuperID, você centraliza seus acessos em um único lugar seguro.",
                             highlight = "Conecte-se com praticidade e segurança.",
                             imageResId = R.drawable.manwithphone
                         )
                         1 -> OnboardingPage(
                             title = "Login com QR Code, sem digitar senha",
-                            description = "Acesse sites parceiros apenas escaneando...",
+                            description = "Acesse sites parceiros apenas escaneando um QR Code. É rápido, seguro e sem digitação de senhas.",
                             highlight = "A tecnologia do SuperID faz o login por você.",
                             imageResId = R.drawable.phonewithqrcode
                         )
                         2 -> OnboardingPage(
                             title = "Gerencie suas senhas com segurança total",
-                            description = "Armazene senhas de sites, apps e até teclados...",
+                            description = "Armazene senhas de sites, apps e até teclados físicos. Todas criptografadas e protegidas por uma única Senha Mestre.",
                             highlight = "Suas credenciais organizadas e protegidas.",
                             imageResId = R.drawable.vault
                         )
