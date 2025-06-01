@@ -1,6 +1,5 @@
-package projeto.integrador.ui.screens.signIn
+package projeto.integrador.ui.screens.unlock
 
-import SignInViewModel
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,11 +24,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedSecureTextField
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SecureTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,16 +33,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.google.firebase.auth.FirebaseAuth
 import projeto.integrador.R
 
-
 @Composable
-fun SignInScreen(
+fun UnlockScreen(
     context: Context,
-    modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModel: SignInViewModel = remember { SignInViewModel() }
+    viewModel: UnlockViewModel = viewModel()
 ) {
     Box(
         modifier = Modifier
@@ -74,56 +70,37 @@ fun SignInScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            OutlinedTextField(
-                state = viewModel.emailState,
-                label = { Text("Endereço de E-mail") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
-
             OutlinedSecureTextField(
                 state = viewModel.senhaState,
                 label = { Text("Senha") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                textObfuscationMode =
-                    if (viewModel.senhaVisivel.value)
-                        TextObfuscationMode.Visible
-                    else
-                        TextObfuscationMode.RevealLastTyped,
+                textObfuscationMode = if (viewModel.senhaVisivel.value) {
+                    TextObfuscationMode.Visible
+                } else {
+                    TextObfuscationMode.RevealLastTyped
+                },
                 trailingIcon = {
-                    val icon =
-                        if (viewModel.senhaVisivel.value)
-                            Icons.Default.Visibility
-                        else
-                            Icons.Default.VisibilityOff
-
+                    val icon = if (viewModel.senhaVisivel.value) {
+                        Icons.Default.Visibility
+                    } else {
+                        Icons.Default.VisibilityOff
+                    }
                     IconButton(onClick = { viewModel.toggleSenhaVisivel() }) {
                         Icon(icon, contentDescription = null)
                     }
                 }
             )
 
-            Text(
-                "Esqueci minha senha",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(top = 8.dp, start = 8.dp)
-                    .clickable {
-                        navController.navigate("forgotPassword")
-                    }
-            )
-
             Spacer(modifier = Modifier.height(36.dp))
 
             Button(
                 onClick = {
-                    viewModel.signIn(context) { success ->
-                        if (success) navController.navigate("home")
+                    viewModel.unlock(context) { success ->
+                        if (success) {
+                            navController.navigate("home")
+                        }
                     }
                 },
                 modifier = Modifier
@@ -131,27 +108,27 @@ fun SignInScreen(
                     .height(48.dp),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(
-                    "Criar conta",
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                Text("Desbloquear")
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    "Não tem uma conta? ",
+                    "Deseja trocar de conta? ",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    "Regitre-se aqui",
+                    "Clique aqui",
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate("signUp")
+                        FirebaseAuth.getInstance().signOut()
+                        navController.navigate("signIn")
                     }
                 )
             }

@@ -17,6 +17,7 @@ import projeto.integrador.ui.screens.PasswordRecoveryScreen
 import projeto.integrador.ui.screens.ProfileScreen
 import projeto.integrador.ui.screens.signIn.SignInScreen
 import projeto.integrador.ui.screens.signUp.SignUpScreen
+import projeto.integrador.ui.screens.unlock.UnlockScreen
 
 
 //import projeto.integrador.ui.screens.SignInScreen
@@ -37,7 +38,7 @@ fun NavigationSetup(navController: NavHostController) {
     val isLogged = FirebaseAuth.getInstance().currentUser != null
 
     val startDestination = when {
-        isLogged -> "home"
+        isLogged -> "unlock"
         isFirstTime -> "onboarding"
         else -> "signUp"
     }
@@ -86,6 +87,13 @@ fun NavigationSetup(navController: NavHostController) {
             PasswordRecoveryScreen(
                 navController = navController,
                 context = context
+            )
+        }
+
+        composable("unlock") {
+            UnlockScreen(
+                context = context,
+                navController = navController,
             )
         }
     }

@@ -19,6 +19,7 @@ fun RequiredTextField(
         label = { Text(label) },
         supportingText = { Text("Campo obrigatório") },
         singleLine = true,
-        modifier = modifier
+        modifier = modifier,
+        enabled = enabled
     )
 }
