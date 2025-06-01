@@ -35,11 +35,11 @@ fun ConfigCard(
         Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(12.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     } else {
         Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(horizontal = 12.dp, vertical = 6.dp)
     }
 
     // Organiza os elementos do card em linha: ícone, textos e conteúdo opcional à direita.
@@ -52,7 +52,7 @@ fun ConfigCard(
             imageVector = icon,
             contentDescription = title,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(28.dp)
         )
 
         // Espaçamento entre ícone e textos

@@ -1,9 +1,8 @@
 package projeto.integrador.routes
 
-import HomeScreen
+import projeto.integrador.ui.screens.home.HomeScreen
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,11 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.auth.FirebaseAuth
 import projeto.integrador.ui.screens.CategoriasScreen
-import projeto.integrador.ui.screens.ConfigScreen
 import projeto.integrador.ui.screens.OnboardingScreen
 import projeto.integrador.ui.screens.ProfileScreen
-import projeto.integrador.ui.screens.cadastro.AddAccessScreen
-import projeto.integrador.ui.screens.components.QrCodeScannerScreen
 import projeto.integrador.ui.screens.signIn.SignInScreen
 import projeto.integrador.ui.screens.signUp.SignUpScreen
 
@@ -81,12 +77,8 @@ fun NavigationSetup(navController: NavHostController) {
             CategoriasScreen(navController = navController)
         }
 
-        composable("addAccess"){
-            AddAccessScreen(
-                modifier = Modifier,
-                navController = navController
-            )
+        composable("profile") {
+            ProfileScreen()
         }
-
     }
 }

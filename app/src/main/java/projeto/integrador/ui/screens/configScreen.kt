@@ -37,13 +37,18 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
 import com.google.firebase.Firebase
+import projeto.integrador.utilities.signOut
 
 @Composable
 fun ConfigScreen(
-    padding: PaddingValues
+    padding: PaddingValues,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
@@ -187,6 +192,25 @@ fun ConfigScreen(
                 description = "Como tratamos seus dados",
                 onClick = {
                     Toast.makeText(context, "Política de Privacidade em breve", Toast.LENGTH_SHORT).show()
+                },
+                trailingContent = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            )
+        }
+
+        item {
+            ConfigCard(
+                icon = Icons.AutoMirrored.Filled.Logout,
+                title = "Deslogar",
+                description = "Sai da sua conta no aplicativo",
+                onClick = {
+                    signOut()
+                    navController.navigate("signUp")
                 },
                 trailingContent = {
                     Icon(
