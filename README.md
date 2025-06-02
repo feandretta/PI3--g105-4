@@ -19,18 +19,19 @@ O SuperID é um aplicativo Android desenvolvido em Kotlin, que permite a criaç�
 
 ## Como Executar
 1. Clone o repositório.
-2. Configure as credenciais do Firebase no projeto.
-3. Execute o aplicativo no Android Studio.
+2. Execute o aplicativo no Android Studio.
+3. Entre nos diretórios corretos
+ ```bash
+cd .\web\frontend\
+```
+4. Instale as dependências
+```bash 
+npm install
+```
+5. Ainda dentro do diretório frontend inicie o código com:
+```bash
+npm start
+```
 
-## Contribuição
-Siga o fluxo de branches:
-- **main:** Versão estável.
-- **develop:** Desenvolvimento contínuo.
-- **feature/*:** Novas funcionalidades.
-
-## Cronograma
-- **Release Final:** 01 de junho de 2025
-
-## Contato
-Equipe SuperID – Contate os orientadores para mais informações.
-
+##  Como funciona
+No app caso seja a primeira vez do usuário será mostrada a página de termos de uso para o usuário, em seguida deve criar a conta, após a criação o app só permitirá que o usuário efetue o login caso verifique o email de cadastro.Em seguida o usuário poderá criar uma categoria ou adicionar uma conta.É possível também scanear um QR Code de um site parceiro para efetuação de login, basta o usuário selecionar o scanner e apontar a câmera do celular para o QR Code no site parceiro.
